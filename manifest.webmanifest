@@ -1,0 +1,9 @@
+{
+  "name": "おかたづけ一手",
+  "short_name": "一手",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fff7fb",
+  "theme_color": "#8c4cf6",
+  "icons": []
+}

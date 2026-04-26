@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>おかたづけ一手</title>
+    <meta name="theme-color" content="#8c4cf6">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  </head>
+  <body class="mobile-preview">
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="header-main">
+          <button class="icon-button" id="homeButton" type="button" aria-label="ホームへ戻る">⌂</button>
+          <div>
+            <p class="eyebrow">片付け支援</p>
+            <h1>おかたづけ一手</h1>
+          </div>
+        </div>
+        <div class="header-tools">
+          <span class="mini-stat"><b id="headerTodayCount">0</b>手</span>
+          <button class="icon-button" id="resetButton" type="button" aria-label="保存データをリセット">↺</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="screen active" id="homeScreen" aria-label="ホーム">
+          <div class="hero">
+            <div class="hero-copy">
+              <p class="eyebrow">考えるところはアプリが持ちます</p>
+              <p>大きく片付けなくて大丈夫。今できる小さい行動を1つずつ出します。</p>
+            </div>
+            <div class="room-visual" aria-hidden="true">
+              <div class="window"></div>
+              <div class="desk"></div>
+              <div class="basket"></div>
+              <div class="paper paper-a"></div>
+              <div class="paper paper-b"></div>
+              <div class="spark"></div>
+            </div>
+          </div>
+
+          <div class="home-actions">
+            <button class="primary-button" id="startButton" type="button">今日の片付けを始める</button>
+            <button class="secondary-button hidden" id="resumeButton" type="button">前回の続きから再開する</button>
+          </div>
+
+          <div class="metrics-row">
+            <article>
+              <span>今日の達成</span>
+              <strong id="todayCount">0</strong>
+            </article>
+            <article>
+              <span>保留中</span>
+              <strong id="holdCount">0</strong>
+            </article>
+            <article>
+              <span>登録エリア</span>
+              <strong id="areaCount">0</strong>
+            </article>
+          </div>
+
+          <section class="panel" aria-labelledby="areaTitle">
+            <div class="section-head">
+              <h2 id="areaTitle">エリア別進捗</h2>
+              <button class="text-button" id="addAreaButton" type="button">追加</button>
+            </div>
+            <div class="area-grid" id="areaGrid"></div>
+          </section>
+
+          <section class="panel" aria-labelledby="driveTitle">
+            <div class="section-head">
+              <div>
+                <h2 id="driveTitle">Google Drive保存</h2>
+                <p class="panel-note">Before / After写真をDriveのアプリ用フォルダへ保存します。GitHub Pagesかlocalhostで使います。</p>
+              </div>
+              <span class="status-pill" id="driveStatus">未接続</span>
+            </div>
+            <label class="field-label" for="driveClientIdInput">OAuthクライアントID</label>
+            <div class="inline-form">
+              <input id="driveClientIdInput" type="text" placeholder="xxxxxxxx.apps.googleusercontent.com">
+              <button class="secondary-button" id="saveDriveClientButton" type="button">保存</button>
+              <button class="primary-button" id="connectDriveButton" type="button">接続</button>
+            </div>
+          </section>
+        </section>
+
+        <section class="screen" id="setupScreen" aria-labelledby="setupTitle">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">今日の状態</p>
+              <h2 id="setupTitle">最初の条件だけ選ぶ</h2>
+            </div>
+          </div>
+
+          <div class="panel">
+            <label class="field-label" for="areaSelect">作業エリア</label>
+            <select id="areaSelect"></select>
+          </div>
+
+          <div class="mode-grid" id="modeGrid"></div>
+
+          <div class="panel">
+            <label class="field-label">時間</label>
+            <div class="segmented" id="durationGroup" role="group" aria-label="セッション時間">
+              <button type="button" data-duration="2">2分</button>
+              <button type="button" data-duration="5" class="selected">5分</button>
+              <button type="button" data-duration="10">10分</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <label class="field-label" for="beforeInput">Before写真</label>
+            <input id="beforeInput" type="file" accept="image/*">
+            <img class="preview hidden" id="beforePreview" alt="Before写真のプレビュー">
+          </div>
+
+          <button class="primary-button wide" id="beginSessionButton" type="button">この条件で始める</button>
+        </section>
+
+        <section class="screen run-screen" id="runScreen" aria-labelledby="taskText">
+          <div class="run-status">
+            <span id="currentArea">机</span>
+            <strong id="timerText">05:00</strong>
+            <span><b id="sessionDoneCount">0</b>手</span>
+          </div>
+
+          <div class="task-stage">
+            <p class="eyebrow" id="modeLabel">普通</p>
+            <h2 id="taskText">ゴミを3つ捨てる</h2>
+            <p id="coachLine">終わったら、押すだけで大丈夫。</p>
+          </div>
+
+          <div class="run-actions">
+            <button class="done-button" id="doneButton" type="button">やった</button>
+            <button class="secondary-button" id="repeatButton" type="button">もう1回</button>
+            <button class="secondary-button" id="skipButton" type="button">スキップ</button>
+            <button class="secondary-button" id="holdButton" type="button">保留</button>
+          </div>
+
+          <button class="text-button end-button" id="endButton" type="button">今日は終了してよい</button>
+          <div class="completion-pop hidden" id="completionPop" aria-live="polite">できた</div>
+        </section>
+
+        <section class="screen" id="summaryScreen" aria-labelledby="summaryTitle">
+          <div class="summary-hero">
+            <p class="eyebrow">終了</p>
+            <h2 id="summaryTitle">ここで終わって大丈夫。</h2>
+            <p id="summaryLine">小さい1手は、ちゃんと進捗です。</p>
+          </div>
+
+          <div class="metrics-row">
+            <article>
+              <span>今回</span>
+              <strong id="summarySessionCount">0</strong>
+            </article>
+            <article>
+              <span>今日</span>
+              <strong id="summaryTodayCount">0</strong>
+            </article>
+          </div>
+
+          <div class="photo-pair">
+            <div>
+              <span>Before</span>
+              <img id="summaryBefore" alt="Before写真">
+            </div>
+            <div>
+              <label for="afterInput">After</label>
+              <input id="afterInput" type="file" accept="image/*">
+              <img id="summaryAfter" alt="After写真">
+            </div>
+          </div>
+
+          <div class="home-actions">
+            <button class="primary-button" id="continueButton" type="button">続ける</button>
+            <button class="secondary-button" id="finishButton" type="button">終了する</button>
+          </div>
+        </section>
+      </main>
+
+      <nav class="mobile-dock" aria-label="スマホ用ナビゲーション">
+        <button type="button" data-mobile-nav="home">ホーム</button>
+        <button type="button" data-mobile-nav="start">開始</button>
+        <button type="button" data-mobile-nav="resume">再開</button>
+      </nav>
+    </div>
+
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+    <div class="coach-bubble hidden" id="coachBubble" aria-live="polite">
+      <div class="coach-face" aria-hidden="true"></div>
+      <p id="coachBubbleText">3つだけで大丈夫。</p>
+    </div>
+
+    <dialog id="areaDialog">
+      <form method="dialog" class="dialog-body">
+        <h2>エリアを追加</h2>
+        <label class="field-label" for="areaNameInput">名前</label>
+        <input id="areaNameInput" type="text" maxlength="16" placeholder="例: 本棚">
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="submit">閉じる</button>
+          <button class="primary-button" id="saveAreaButton" value="default" type="button">追加</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
