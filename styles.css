@@ -114,9 +114,107 @@ p {
   margin: 0;
 }
 
-.app-header h1 {
-  font-size: 1.08rem;
-  line-height: 1.2;
+.brand-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-height: 44px;
+  padding: 2px 12px 8px 2px;
+  color: #fff6ff;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0;
+  text-shadow:
+    0 2px 0 rgba(64, 31, 92, 0.55),
+    0 5px 14px rgba(40, 22, 63, 0.34);
+}
+
+.brand-logo::after {
+  content: "";
+  position: absolute;
+  left: 44px;
+  right: 24px;
+  bottom: 0;
+  height: 11px;
+  border-bottom: 4px solid rgba(142, 232, 209, 0.92);
+  border-radius: 0 0 999px 999px;
+  transform: skewX(-16deg);
+  filter: drop-shadow(0 2px 0 rgba(40, 22, 63, 0.18));
+}
+
+.brand-text {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(1.45rem, 4vw, 2.15rem);
+  -webkit-text-stroke: 0.035em rgba(64, 31, 92, 0.72);
+  paint-order: stroke fill;
+}
+
+.brand-mark {
+  position: relative;
+  z-index: 1;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  transform: rotate(-18deg);
+}
+
+.brand-mark::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 0;
+  width: 6px;
+  height: 32px;
+  border-radius: 999px;
+  background: linear-gradient(#b87538, #7e431f);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.35);
+}
+
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  bottom: 0;
+  width: 34px;
+  height: 18px;
+  border-radius: 2px 2px 16px 16px;
+  background:
+    repeating-linear-gradient(100deg, rgba(104, 60, 24, 0.36) 0 2px, transparent 2px 5px),
+    linear-gradient(90deg, #f4bb61, #c87a36);
+  clip-path: polygon(35% 0, 65% 0, 100% 100%, 0 100%);
+}
+
+.brand-leaf {
+  position: relative;
+  z-index: 1;
+  width: 26px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.brand-leaf::before,
+.brand-leaf::after {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  width: 15px;
+  height: 9px;
+  border-radius: 99px 99px 0 99px;
+  background: #8ee8d1;
+}
+
+.brand-leaf::before {
+  left: 0;
+  transform: rotate(-24deg);
+}
+
+.brand-leaf::after {
+  right: 0;
+  transform: rotate(28deg) scaleX(-1);
+  background: #ffd166;
 }
 
 .eyebrow {
