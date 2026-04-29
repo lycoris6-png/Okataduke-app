@@ -93,15 +93,18 @@ button {
 }
 
 .header-main {
+  display: block;
   justify-content: flex-start;
   z-index: 2;
 }
 
 .header-tools {
+  display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   z-index: 2;
   gap: 6px;
+  margin-top: 8px;
 }
 
 .app-header h1,
@@ -182,14 +185,21 @@ p {
 }
 
 .header-action {
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: 32px;
+  padding: 0 11px;
   border: 1.5px solid rgba(255, 255, 255, 0.36);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
   color: #ffffff;
   font-size: 0.82rem;
   font-weight: 900;
+}
+
+.section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
 }
 
 .mini-stat,
@@ -514,6 +524,17 @@ input[type="text"] {
   background: #ffffff;
 }
 
+textarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #ffffff;
+  line-height: 1.7;
+}
+
 .segmented {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -645,17 +666,17 @@ input[type="text"] {
 
 .run-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr 1fr;
   gap: 10px;
   margin-top: 14px;
 }
 
 .run-actions .done-button {
-  grid-column: 1 / -1;
+  grid-column: auto;
 }
 
 .end-button {
-  display: block;
+  display: none;
   margin: 14px auto 0;
 }
 
@@ -690,48 +711,29 @@ input[type="text"] {
   animation: toastIn 260ms cubic-bezier(.34, 1.56, .64, 1) both;
 }
 
-.coach-bubble {
-  position: fixed;
-  right: max(14px, env(safe-area-inset-right));
-  bottom: max(76px, calc(env(safe-area-inset-bottom) + 76px));
-  z-index: 110;
-  display: grid;
-  grid-template-columns: 58px minmax(150px, 230px);
-  gap: 10px;
-  align-items: end;
-  pointer-events: none;
-  animation: floatIn 260ms ease both;
-}
-
-.coach-avatar {
-  width: 58px;
-  height: 58px;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 14px rgba(140, 76, 246, 0.22));
-}
-
-.coach-bubble p {
-  position: relative;
-  margin-bottom: 8px;
-  padding: 10px 12px;
-  border: 1.5px solid var(--line-strong);
-  border-radius: 14px 14px 14px 5px;
-  background: rgba(255, 255, 255, 0.96);
-  color: var(--ink);
-  font-size: 0.82rem;
-  font-weight: 900;
-  line-height: 1.55;
-  box-shadow: var(--shadow);
-}
-
 .completion-pop.show {
   animation: pop 800ms ease-out;
 }
 
 .summary-hero {
   position: relative;
-  padding: 28px;
+  min-height: 150px;
+  padding: 24px 210px 24px 24px;
   overflow: hidden;
+}
+
+.summary-dialogue {
+  position: relative;
+  max-width: 32rem;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-weight: 900;
+  line-height: 1.7;
+  box-shadow: 0 8px 22px rgba(140, 76, 246, 0.10);
 }
 
 .summary-mascots {
@@ -854,7 +856,7 @@ dialog {
   }
 
   .app-header {
-    align-items: center;
+    align-items: flex-start;
     padding: 10px 8px 42px;
     min-height: 108px;
     border-radius: 12px;
@@ -867,9 +869,17 @@ dialog {
   }
 
   .header-tools {
-    width: auto;
-    justify-content: flex-end;
-    margin-top: 0;
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 8px;
+  }
+
+  .section-head {
+    align-items: flex-start;
+  }
+
+  .section-actions {
+    min-width: max-content;
   }
 
   .hero,
@@ -919,18 +929,6 @@ dialog {
     font-size: 0.82rem;
   }
 
-  .coach-bubble {
-    right: 10px;
-    bottom: 80px;
-    grid-template-columns: 48px minmax(0, 1fr);
-    max-width: calc(100vw - 20px);
-  }
-
-  .coach-avatar {
-    width: 48px;
-    height: 48px;
-  }
-
   .inline-form {
     grid-template-columns: 1fr;
   }
@@ -947,16 +945,16 @@ body.mobile-preview .app-shell {
 }
 
 body.mobile-preview .app-header {
-  align-items: center;
+  align-items: flex-start;
   padding: 10px 8px 42px;
   min-height: 108px;
   border-radius: 12px;
 }
 
 body.mobile-preview .header-tools {
-  width: auto;
-  justify-content: flex-end;
-  margin-top: 0;
+  width: 100%;
+  justify-content: flex-start;
+  margin-top: 8px;
 }
 
 body.mobile-preview .hero,
@@ -994,5 +992,15 @@ body.mobile-preview .metrics-row {
 
   .run-actions .done-button {
     grid-column: auto;
+  }
+
+  .summary-hero {
+    min-height: 190px;
+    padding: 18px 18px 94px;
+  }
+
+  .summary-mascots img {
+    width: 76px;
+    height: 76px;
   }
 }

@@ -15,13 +15,12 @@
         <div class="header-main">
           <div>
             <h1>かたづけ支援</h1>
+            <div class="header-tools">
+              <button class="header-action" id="homeButton" type="button">ホーム</button>
+              <button class="header-action hidden" id="headerResumeButton" type="button">再開</button>
+              <button class="header-action" id="resetButton" type="button">リセット</button>
+            </div>
           </div>
-        </div>
-        <div class="header-tools">
-          <button class="header-action" id="homeButton" type="button">ホーム</button>
-          <button class="header-action hidden" id="headerResumeButton" type="button">再開</button>
-          <button class="header-action" id="headerAddAreaButton" type="button">追加</button>
-          <button class="icon-button" id="resetButton" type="button" aria-label="保存データをリセット">↺</button>
         </div>
       </header>
 
@@ -33,7 +32,7 @@
               <strong id="todayCount">0</strong>
             </article>
             <article>
-              <span>保留中</span>
+              <span>編集済み</span>
               <strong id="holdCount">0</strong>
             </article>
             <article>
@@ -47,6 +46,10 @@
               <div>
                 <h2 id="areaTitle">エリア別進捗</h2>
                 <p class="panel-note">タイルを押すと、そのエリアで5分だけ始まります。</p>
+              </div>
+              <div class="section-actions">
+                <button class="text-button" id="editTasksButton" type="button">タスク編集</button>
+                <button class="text-button" id="headerAddAreaButton" type="button">エリア追加</button>
               </div>
             </div>
             <div class="area-grid" id="areaGrid"></div>
@@ -111,19 +114,15 @@
 
           <div class="task-stage">
             <img class="run-mascot" id="runMascot" src="assets/chibi-broom.png" alt="">
-            <p class="eyebrow" id="modeLabel">普通</p>
             <h2 id="taskText">ゴミを3つ捨てる</h2>
             <p id="coachLine">終わったら、押すだけで大丈夫。</p>
           </div>
 
           <div class="run-actions">
             <button class="done-button" id="doneButton" type="button">やった</button>
-            <button class="secondary-button" id="repeatButton" type="button">もう1回</button>
             <button class="secondary-button" id="skipButton" type="button">スキップ</button>
-            <button class="secondary-button" id="holdButton" type="button">保留</button>
+            <button class="secondary-button" id="endButton" type="button">終了</button>
           </div>
-
-          <button class="text-button end-button" id="endButton" type="button">今日は終了してよい</button>
           <div class="completion-pop hidden" id="completionPop" aria-live="polite">できた</div>
         </section>
 
@@ -133,9 +132,7 @@
               <img src="assets/chibi-broom.png" alt="">
               <img src="assets/chibi-laundry.png" alt="">
             </div>
-            <p class="eyebrow">終了</p>
-            <h2 id="summaryTitle">ここで終わって大丈夫。</h2>
-            <p id="summaryLine">小さい1手は、ちゃんと進捗です。</p>
+            <p class="summary-dialogue" id="summaryDialogue">ぼくたちも見ていました。ここまでで十分です。</p>
           </div>
 
           <div class="metrics-row">
@@ -171,10 +168,6 @@
     </div>
 
     <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
-    <div class="coach-bubble hidden" id="coachBubble" aria-live="polite">
-      <img class="coach-avatar" id="coachAvatar" src="assets/chibi-broom.png" alt="">
-      <p id="coachBubbleText">3つだけで大丈夫。</p>
-    </div>
 
     <dialog id="areaDialog">
       <form method="dialog" class="dialog-body">
@@ -184,6 +177,22 @@
         <div class="dialog-actions">
           <button class="secondary-button" value="cancel" type="submit">閉じる</button>
           <button class="primary-button" id="saveAreaButton" value="default" type="button">追加</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="taskDialog">
+      <form method="dialog" class="dialog-body">
+        <h2>掃除タスクを編集</h2>
+        <label class="field-label" for="taskAreaSelect">エリア</label>
+        <select id="taskAreaSelect"></select>
+        <label class="field-label" for="taskListInput">候補</label>
+        <textarea id="taskListInput" rows="10" placeholder="1行に1つずつ入力"></textarea>
+        <p class="panel-note">空行は無視します。保存すると、そのエリアで表示される候補に反映されます。</p>
+        <div class="dialog-actions">
+          <button class="secondary-button" id="resetTasksButton" value="default" type="button">初期値に戻す</button>
+          <button class="secondary-button" value="cancel" type="submit">閉じる</button>
+          <button class="primary-button" id="saveTasksButton" value="default" type="button">保存</button>
         </div>
       </form>
     </dialog>

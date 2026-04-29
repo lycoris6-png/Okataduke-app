@@ -104,19 +104,33 @@ const taskTemplates = [
   { id: "closet_drawer_1", text: "引き出しを1段だけ閉める", areaIds: ["closet"], category: "tiny", energy: "low", estimatedMinutes: 1 }
 ];
 const coachLines = [
-  "終わったら、押すだけで大丈夫。",
-  "判断が重いものは触らなくて大丈夫。",
-  "完璧にしないのが今日の作戦。",
-  "3つで止めても、進んでいます。",
-  "迷ったら保留で逃がしましょう。"
+  "ぼくが次の一手だけ出します。ここだけ見れば大丈夫です。",
+  "私ならまずこれやる！終わったら押してね。",
+  "ぼくと一緒に、三つだけ片づけましょう。",
+  "全部じゃなくていいよ。今はこの一手だけ！",
+  "迷うものは後で大丈夫です。ぼくたちは進める方を選びます。",
+  "私、こういう小さい前進すき！一個でも勝ち！",
+  "ここまで来られたので、もう十分に始まっています。",
+  "勢いがなくても大丈夫。ぼくが順番を持っています。",
+  "よーし、次これ！考えるのは私たちに預けて。",
+  "手を動かせる大きさにしてあります。ゆっくりで大丈夫です。",
+  "止まっても平気！次の一手はここにあります。",
+  "私たち、ちゃんと見てるよ。今の一手で変わるからね。"
 ];
 
 const praiseLines = [
-  "よし、少し空気が通りました。",
-  "小さい1手は、ちゃんと進捗です。",
-  "今日はここで区切って大丈夫。",
-  "見える範囲が少し変わりました。",
-  "終われるところまで来ました。"
+  "ぼくから見ても、ちゃんと進みました。今日はここで区切って大丈夫です。",
+  "私、今の片づけ好き！小さいけど、ちゃんと場所が息した感じ！",
+  "おつかれさまでした。ぼくたちも一緒に見届けました。",
+  "ここで止められるのも上手な片づけです。ぼくはそう思います。",
+  "私ならここで一回お茶にする！ちゃんとやったもん。",
+  "完璧ではなく、再開できる形で終われました。とても良いです。",
+  "やったね！私、こういうちょっと変わる瞬間が好き！",
+  "ぼくは、今日の一手をきちんと記録しておきます。",
+  "ここまでで十分。私たち、また次の一手を出せるよ。",
+  "おつかれさまです。ぼくたちが次回もここから手伝います。",
+  "終われるところまで来たの、かなりえらいよ。私が保証する！",
+  "今日はこれで閉じましょう。ぼくは十分だと思います。"
 ];
 
 let state = loadState();
@@ -124,7 +138,6 @@ let selectedMode = state.session?.mode || "normal";
 let selectedDuration = state.session?.durationMinutes || 5;
 let timerId = null;
 let toastTimer = null;
-let coachTimer = null;
 let driveToken = null;
 let driveTokenExpiresAt = 0;
 let driveTokenClient = null;
@@ -139,6 +152,7 @@ function createInitialState() {
     heldTasks: [],
     session: null,
     lastTaskIndex: 0,
+    customTasks: {},
     drive: {
       clientId: "",
       folderId: null
@@ -155,6 +169,7 @@ function loadState() {
       initial.todayCompleted = 0;
     }
     initial.areas = normalizeAreas(initial.areas);
+    if (!initial.customTasks) initial.customTasks = {};
     if (!initial.drive) initial.drive = { clientId: "", folderId: null };
     return initial;
   } catch {
@@ -194,7 +209,7 @@ function showScreen(id) {
 
 function renderHome() {
   $("todayCount").textContent = state.todayCompleted;
-  $("holdCount").textContent = state.heldTasks.length;
+  $("holdCount").textContent = Object.values(state.customTasks || {}).filter((items) => items?.length).length;
   $("areaCount").textContent = state.areas.length;
   $("headerResumeButton").classList.toggle("hidden", !state.session?.isActive);
 
@@ -293,7 +308,6 @@ function beginSession({ areaId, mode, durationMinutes, beforeImage }) {
   renderRun();
   showScreen("runScreen");
   startTimer();
-  showCoach("最初は3つだけで大丈夫。");
   uploadSessionPhoto("before");
 }
 
@@ -315,6 +329,12 @@ function resumeSession() {
 }
 
 function chooseTask(modeId, areaId = state.session?.areaId) {
+  const customList = customTaskTemplatesForArea(areaId);
+  if (customList.length) {
+    const task = customList[state.lastTaskIndex % customList.length];
+    state.lastTaskIndex += 1;
+    return task;
+  }
   const mode = modes.find((item) => item.id === modeId) || modes[1];
   const pool = taskTemplates.filter((task) => {
     const areaMatch = !task.areaIds || task.areaIds.includes(areaId);
@@ -329,18 +349,34 @@ function chooseTask(modeId, areaId = state.session?.areaId) {
   return task;
 }
 
+function customTaskTemplatesForArea(areaId) {
+  const lines = state.customTasks?.[areaId];
+  if (!Array.isArray(lines) || !lines.length) return [];
+  return lines.map((text, index) => ({
+    id: `custom_${areaId}_${index}`,
+    text,
+    areaIds: [areaId],
+    category: "custom",
+    energy: "low",
+    estimatedMinutes: 2
+  }));
+}
+
+function defaultTaskTextsForArea(areaId) {
+  return taskTemplates
+    .filter((task) => task.areaIds?.includes(areaId))
+    .map((task) => task.text);
+}
+
 function renderRun() {
   const session = state.session;
   const area = state.areas.find((item) => item.id === session.areaId);
-  const mode = modes.find((item) => item.id === session.mode);
   const mascot = mascotForTask(session.currentTask);
   $("currentArea").textContent = area?.name || "エリア";
-  $("modeLabel").textContent = mode?.label || "普通";
   $("taskText").textContent = session.currentTask?.text || "ゴミを3つ捨てる";
   $("sessionDoneCount").textContent = session.completedCount;
   $("coachLine").textContent = coachLines[session.completedCount % coachLines.length];
   $("runMascot").src = mascot;
-  $("coachAvatar").src = mascot;
   renderTimer();
 }
 
@@ -359,7 +395,6 @@ function completeTask({ repeat = false } = {}) {
   renderRun();
   showPop();
   showToast("1手ぶん進みました");
-  showCoach(coachLines[session.completedCount % coachLines.length]);
 }
 
 function skipTask({ silent = false } = {}) {
@@ -371,21 +406,12 @@ function skipTask({ silent = false } = {}) {
   if (!silent) showToast("スキップしました");
 }
 
-function holdTask() {
-  const session = state.session;
-  if (!session?.isActive) return;
-  state.heldTasks.push({ ...session.currentTask, heldAt: new Date().toISOString() });
-  showToast("保留に逃がしました");
-  skipTask({ silent: true });
-}
-
 function endSession() {
   if (!state.session) return;
   state.session.isActive = false;
   saveState();
   stopTimer();
   renderSummary();
-  showCoach(praiseLines[(state.session?.completedCount || 0) % praiseLines.length]);
   showScreen("summaryScreen");
 }
 
@@ -393,7 +419,7 @@ function renderSummary() {
   const session = state.session;
   $("summarySessionCount").textContent = session?.completedCount || 0;
   $("summaryTodayCount").textContent = state.todayCompleted;
-  $("summaryLine").textContent = praiseLines[(session?.completedCount || 0) % praiseLines.length];
+  $("summaryDialogue").textContent = praiseLines[(session?.completedCount || 0) % praiseLines.length];
   setImage($("summaryBefore"), session?.beforeImage);
   setImage($("summaryAfter"), session?.afterImage);
 }
@@ -605,15 +631,6 @@ function showToast(message) {
   toastTimer = window.setTimeout(() => toast.classList.add("hidden"), 2300);
 }
 
-function showCoach(message, mascot = null) {
-  const bubble = $("coachBubble");
-  $("coachBubbleText").textContent = message;
-  $("coachAvatar").src = mascot || $("runMascot")?.src || MASCOTS.broom;
-  bubble.classList.remove("hidden");
-  window.clearTimeout(coachTimer);
-  coachTimer = window.setTimeout(() => bubble.classList.add("hidden"), 3600);
-}
-
 function mascotForTask(task) {
   if (!task) return MASCOTS.broom;
   if (task.category === "clothes" || task.category === "paper") return MASCOTS.laundry;
@@ -653,6 +670,51 @@ function addArea() {
   renderHome();
 }
 
+function openTaskEditor(areaId = state.areas[0]?.id) {
+  renderTaskAreaOptions();
+  $("taskAreaSelect").value = areaId || state.areas[0]?.id || "";
+  renderTaskEditor();
+  $("taskDialog").showModal();
+}
+
+function renderTaskAreaOptions() {
+  const select = $("taskAreaSelect");
+  select.innerHTML = "";
+  state.areas.forEach((area) => {
+    const option = document.createElement("option");
+    option.value = area.id;
+    option.textContent = area.name;
+    select.append(option);
+  });
+}
+
+function renderTaskEditor() {
+  const areaId = $("taskAreaSelect").value;
+  const custom = state.customTasks?.[areaId];
+  const lines = Array.isArray(custom) ? custom : defaultTaskTextsForArea(areaId);
+  $("taskListInput").value = lines.join("\n");
+}
+
+function saveTaskEditor() {
+  const areaId = $("taskAreaSelect").value;
+  const lines = $("taskListInput").value
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  state.customTasks[areaId] = lines;
+  saveState();
+  $("taskDialog").close();
+  showToast("掃除タスクを保存しました");
+}
+
+function resetTaskEditor() {
+  const areaId = $("taskAreaSelect").value;
+  delete state.customTasks[areaId];
+  saveState();
+  renderTaskEditor();
+  showToast("初期候補に戻しました");
+}
+
 function escapeHtml(value) {
   return value.replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
@@ -682,15 +744,14 @@ function bindEvents() {
   });
   $("headerResumeButton").addEventListener("click", resumeSession);
   $("headerAddAreaButton").addEventListener("click", () => $("areaDialog").showModal());
+  $("editTasksButton").addEventListener("click", () => openTaskEditor());
   $("saveDriveClientButton").addEventListener("click", saveDriveClientId);
   $("connectDriveButton").addEventListener("click", () => {
     connectDrive().catch((error) => console.error(error));
   });
   $("beginSessionButton").addEventListener("click", startSession);
   $("doneButton").addEventListener("click", () => completeTask());
-  $("repeatButton").addEventListener("click", () => completeTask({ repeat: true }));
   $("skipButton").addEventListener("click", skipTask);
-  $("holdButton").addEventListener("click", holdTask);
   $("endButton").addEventListener("click", endSession);
   $("continueButton").addEventListener("click", () => {
     selectedMode = state.session?.mode || selectedMode;
@@ -705,6 +766,9 @@ function bindEvents() {
     showToast("おつかれさまでした");
   });
   $("saveAreaButton").addEventListener("click", addArea);
+  $("taskAreaSelect").addEventListener("change", renderTaskEditor);
+  $("saveTasksButton").addEventListener("click", saveTaskEditor);
+  $("resetTasksButton").addEventListener("click", resetTaskEditor);
   $("durationGroup").addEventListener("click", (event) => {
     const button = event.target.closest("button[data-duration]");
     if (!button) return;
