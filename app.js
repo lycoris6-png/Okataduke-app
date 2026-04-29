@@ -6,6 +6,37 @@ const MASCOTS = {
   laundry: "assets/chibi-laundry.png"
 };
 
+const SPEAKERS = {
+  gene: {
+    name: "ジーン",
+    src: MASCOTS.broom,
+    lines: [
+      "ぼくが次の一手だけ出します。ここだけ見れば大丈夫です。",
+      "ぼくなら、まずここから始めます。終わったら押してください。",
+      "全部を見なくて大丈夫です。今はこの一手だけで十分です。",
+      "迷うところはぼくが持ちます。手だけ少し動かしましょう。",
+      "止まっても平気です。次の一手はここにあります。",
+      "これは小さいけれど、ちゃんと前に進む一手です。",
+      "ぼくも一緒に見ています。終わったら合図してください。",
+      "ここまで来られたので、もう始まっています。ゆっくりで大丈夫です。"
+    ]
+  },
+  nadia: {
+    name: "ナディア",
+    src: MASCOTS.laundry,
+    lines: [
+      "私ならまずこれやる！終わったら押してね。",
+      "よし、次これ！考えるところは私たちに任せて。",
+      "一気にやらなくていいよ。これだけ片づけたら勝ち！",
+      "迷ったら今は保留でいいから、手を動かしちゃおう。",
+      "小さい前進、かなりえらいよ。次はこれ！",
+      "ここだけ見てれば大丈夫。私が次を出すね。",
+      "完璧じゃなくていいよ。今の一手がちゃんと効くから。",
+      "いい感じ！終わったら押して、次を一緒に選ぼう。"
+    ]
+  }
+};
+
 const defaultAreas = [
   { id: "desk", name: "机", level: 1, completedCount: 0, lastWorkedAt: null },
   { id: "office_desk", name: "オフィスの机", level: 1, completedCount: 0, lastWorkedAt: null },
@@ -384,12 +415,14 @@ function defaultTaskTextsForArea(areaId) {
 function renderRun() {
   const session = state.session;
   const area = state.areas.find((item) => item.id === session.areaId);
-  const mascot = mascotForTask(session.currentTask);
+  const speaker = speakerForTask(session.currentTask);
   $("currentArea").textContent = area?.name || "エリア";
   $("taskText").textContent = session.currentTask?.text || "ゴミを3つ捨てる";
   $("sessionDoneCount").textContent = session.completedCount;
-  $("coachLine").textContent = coachLines[session.completedCount % coachLines.length];
-  $("runMascot").src = mascot;
+  $("coachName").textContent = speaker.name;
+  $("coachLine").textContent = speaker.lines[session.completedCount % speaker.lines.length];
+  $("runMascot").src = speaker.src;
+  $("runMascot").alt = speaker.name;
   renderTimer();
 }
 
@@ -644,10 +677,10 @@ function showToast(message) {
   toastTimer = window.setTimeout(() => toast.classList.add("hidden"), 2300);
 }
 
-function mascotForTask(task) {
-  if (!task) return MASCOTS.broom;
-  if (task.category === "clothes" || task.category === "paper") return MASCOTS.laundry;
-  return MASCOTS.broom;
+function speakerForTask(task) {
+  if (!task) return SPEAKERS.gene;
+  if (task.category === "clothes" || task.category === "paper") return SPEAKERS.nadia;
+  return SPEAKERS.gene;
 }
 
 function readImage(input, callback) {
