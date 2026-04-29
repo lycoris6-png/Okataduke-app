@@ -13,46 +13,20 @@
     <div class="app-shell">
       <header class="app-header">
         <div class="header-main">
-          <button class="icon-button" id="homeButton" type="button" aria-label="ホームへ戻る">⌂</button>
           <div>
-            <p class="eyebrow">片付け支援</p>
-            <h1>おかたづけ一手</h1>
+            <h1>かたづけ支援</h1>
           </div>
         </div>
         <div class="header-tools">
-          <span class="mini-stat"><b id="headerTodayCount">0</b>手</span>
+          <button class="header-action" id="homeButton" type="button">ホーム</button>
+          <button class="header-action hidden" id="headerResumeButton" type="button">再開</button>
+          <button class="header-action" id="headerAddAreaButton" type="button">追加</button>
           <button class="icon-button" id="resetButton" type="button" aria-label="保存データをリセット">↺</button>
-        </div>
-        <div class="header-mascots" aria-hidden="true">
-          <img src="assets/chibi-broom.png" alt="">
-          <img src="assets/chibi-laundry.png" alt="">
         </div>
       </header>
 
       <main>
         <section class="screen active" id="homeScreen" aria-label="ホーム">
-          <div class="hero">
-            <div class="hero-copy">
-              <p class="eyebrow">考えるところはアプリが持ちます</p>
-              <p>大きく片付けなくて大丈夫。今できる小さい行動を1つずつ出します。</p>
-            </div>
-            <div class="room-visual" aria-hidden="true">
-              <img class="hero-mascot hero-mascot-broom" src="assets/chibi-broom.png" alt="">
-              <img class="hero-mascot hero-mascot-laundry" src="assets/chibi-laundry.png" alt="">
-              <div class="window"></div>
-              <div class="desk"></div>
-              <div class="basket"></div>
-              <div class="paper paper-a"></div>
-              <div class="paper paper-b"></div>
-              <div class="spark"></div>
-            </div>
-          </div>
-
-          <div class="home-actions">
-            <button class="primary-button" id="startButton" type="button">今日の片付けを始める</button>
-            <button class="secondary-button hidden" id="resumeButton" type="button">前回の続きから再開する</button>
-          </div>
-
           <div class="metrics-row">
             <article>
               <span>今日の達成</span>
@@ -70,8 +44,10 @@
 
           <section class="panel" aria-labelledby="areaTitle">
             <div class="section-head">
-              <h2 id="areaTitle">エリア別進捗</h2>
-              <button class="text-button" id="addAreaButton" type="button">追加</button>
+              <div>
+                <h2 id="areaTitle">エリア別進捗</h2>
+                <p class="panel-note">タイルを押すと、そのエリアで5分だけ始まります。</p>
+              </div>
             </div>
             <div class="area-grid" id="areaGrid"></div>
           </section>
@@ -192,11 +168,6 @@
         </section>
       </main>
 
-      <nav class="mobile-dock" aria-label="スマホ用ナビゲーション">
-        <button type="button" data-mobile-nav="home">ホーム</button>
-        <button type="button" data-mobile-nav="start">開始</button>
-        <button type="button" data-mobile-nav="resume">再開</button>
-      </nav>
     </div>
 
     <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>

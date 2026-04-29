@@ -47,7 +47,7 @@ button {
 .app-shell {
   width: min(960px, 100%);
   margin: 0 auto;
-  padding: 18px 18px 96px;
+  padding: 14px 14px 32px;
 }
 
 .app-header,
@@ -64,12 +64,12 @@ button {
 
 .app-header {
   position: relative;
-  margin-bottom: 20px;
-  padding: 16px 18px;
-  min-height: 92px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  min-height: 0;
   overflow: hidden;
   color: #ffffff;
-  border-radius: 20px;
+  border-radius: 14px;
   background:
     linear-gradient(110deg, rgba(40, 22, 63, 0.96) 0%, rgba(140, 76, 246, 0.90) 54%, rgba(255, 111, 145, 0.86) 100%);
   box-shadow: var(--shadow);
@@ -86,35 +86,6 @@ button {
   pointer-events: none;
 }
 
-.app-header > * {
-  position: relative;
-  z-index: 1;
-}
-
-.header-mascots {
-  position: absolute;
-  right: 76px;
-  bottom: -18px;
-  z-index: 1;
-  display: flex;
-  align-items: flex-end;
-  gap: 2px;
-  pointer-events: none;
-}
-
-.header-mascots img {
-  width: 74px;
-  height: 74px;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 12px rgba(40, 22, 63, 0.28));
-}
-
-.header-mascots img:last-child {
-  width: 82px;
-  height: 82px;
-  margin-left: -16px;
-}
-
 .header-main {
   justify-content: flex-start;
   z-index: 2;
@@ -124,6 +95,7 @@ button {
   flex-wrap: wrap;
   justify-content: flex-end;
   z-index: 2;
+  gap: 6px;
 }
 
 .app-header h1,
@@ -134,7 +106,8 @@ p {
 }
 
 .app-header h1 {
-  font-size: 1.45rem;
+  font-size: 1.08rem;
+  line-height: 1.2;
 }
 
 .eyebrow {
@@ -198,6 +171,17 @@ p {
   min-height: 32px;
   padding: 0 12px;
   border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.header-action {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.36);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
   font-size: 0.82rem;
   font-weight: 900;
 }
@@ -338,6 +322,8 @@ p {
 
 .metrics-row {
   grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .metrics-row article,
@@ -354,7 +340,12 @@ p {
 }
 
 .metrics-row article {
-  padding: 16px;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 10px;
 }
 
 .metrics-row span,
@@ -362,28 +353,39 @@ p {
 .photo-pair label {
   display: block;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.76rem;
   font-weight: 700;
 }
 
 .metrics-row strong {
   display: block;
-  margin-top: 6px;
-  font-size: 2rem;
+  margin-top: 0;
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 .panel {
-  margin-top: 14px;
-  padding: 18px;
+  margin-top: 10px;
+  padding: 14px;
 }
 
 .area-grid {
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  margin-top: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-top: 10px;
 }
 
 .area-card {
-  padding: 14px;
+  width: 100%;
+  min-height: 90px;
+  padding: 12px;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.area-card:hover {
+  border-color: var(--coral);
+  transform: translateY(-1px);
 }
 
 .area-card strong {
@@ -392,7 +394,7 @@ p {
 }
 
 .progress-track {
-  height: 9px;
+  height: 7px;
   overflow: hidden;
   border-radius: 999px;
   background: #e8eee9;
@@ -842,43 +844,29 @@ dialog {
 
 @media (max-width: 720px) {
   .app-shell {
-    padding: 10px 10px 92px;
+    padding: 8px 8px 24px;
   }
 
   .app-header {
-    align-items: flex-start;
-    padding: 16px;
-    border-radius: 16px;
-    min-height: 104px;
-  }
-
-  .header-mascots {
-    right: 12px;
-    bottom: -12px;
-    opacity: 0.78;
-  }
-
-  .header-mascots img {
-    width: 60px;
-    height: 60px;
-  }
-
-  .header-mascots img:last-child {
-    width: 66px;
-    height: 66px;
+    align-items: center;
+    padding: 8px;
+    border-radius: 12px;
   }
 
   .header-tools {
-    width: 100%;
-    justify-content: flex-start;
-    margin-top: 10px;
+    width: auto;
+    justify-content: flex-end;
+    margin-top: 0;
   }
 
   .hero,
   .home-actions,
-  .metrics-row,
   .photo-pair {
     grid-template-columns: 1fr;
+  }
+
+  .metrics-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .hero {
@@ -906,47 +894,21 @@ dialog {
     height: 82px;
   }
 
-  .mobile-dock {
-    position: fixed;
-    left: 10px;
-    right: 10px;
-    bottom: max(10px, env(safe-area-inset-bottom));
-    z-index: 100;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    padding: 8px;
-    border: 1.5px solid var(--line);
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.92);
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(12px);
-  }
-
-  .mobile-dock button {
-    min-height: 44px;
-    border: 0;
-    border-radius: 999px;
-    background: #f5ebff;
-    color: var(--berry);
-    font-weight: 900;
-  }
-
   .run-actions {
     position: sticky;
-    bottom: 82px;
+    bottom: 0;
     padding-top: 8px;
     background: linear-gradient(180deg, transparent, var(--paper) 18%);
   }
 
   .toast {
-    bottom: 86px;
+    bottom: 24px;
     font-size: 0.82rem;
   }
 
   .coach-bubble {
     right: 10px;
-    bottom: 146px;
+    bottom: 80px;
     grid-template-columns: 48px minmax(0, 1fr);
     max-width: calc(100vw - 20px);
   }
@@ -968,7 +930,7 @@ body.mobile-preview {
 }
 
 body.mobile-preview .app-shell {
-  padding: 10px 10px 92px;
+  padding: 8px 8px 24px;
 }
 
 body.mobile-preview .app-header {
@@ -985,35 +947,12 @@ body.mobile-preview .header-tools {
 
 body.mobile-preview .hero,
 body.mobile-preview .home-actions,
-body.mobile-preview .metrics-row,
 body.mobile-preview .photo-pair {
   grid-template-columns: 1fr;
 }
 
-body.mobile-preview .mobile-dock {
-  position: fixed;
-  left: calc(50% - min(205px, 50vw - 10px));
-  right: calc(50% - min(205px, 50vw - 10px));
-  bottom: max(10px, env(safe-area-inset-bottom));
-  z-index: 100;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  padding: 8px;
-  border: 1.5px solid var(--line);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-}
-
-body.mobile-preview .mobile-dock button {
-  min-height: 44px;
-  border: 0;
-  border-radius: 999px;
-  background: #f5ebff;
-  color: var(--berry);
-  font-weight: 900;
+body.mobile-preview .metrics-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 @media (max-width: 420px) {

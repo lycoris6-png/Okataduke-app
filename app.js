@@ -119,22 +119,24 @@ function showScreen(id) {
 
 function renderHome() {
   $("todayCount").textContent = state.todayCompleted;
-  $("headerTodayCount").textContent = state.todayCompleted;
   $("holdCount").textContent = state.heldTasks.length;
   $("areaCount").textContent = state.areas.length;
-  $("resumeButton").classList.toggle("hidden", !state.session?.isActive);
+  $("headerResumeButton").classList.toggle("hidden", !state.session?.isActive);
 
   const areaGrid = $("areaGrid");
   areaGrid.innerHTML = "";
   state.areas.forEach((area) => {
-    const card = document.createElement("article");
+    const card = document.createElement("button");
+    card.type = "button";
     card.className = "area-card";
+    card.dataset.areaId = area.id;
     const percent = Math.min(100, area.completedCount * 10);
     card.innerHTML = `
       <strong>${escapeHtml(area.name)}</strong>
       <div class="progress-track"><div class="progress-fill" style="width: ${percent}%"></div></div>
-      <small>${area.completedCount}手 完了</small>
+      <small>${area.completedCount}手 完了 ・ 押して開始</small>
     `;
+    card.addEventListener("click", () => startSessionForArea(area.id));
     areaGrid.append(card);
   });
   renderDriveStatus();
@@ -179,18 +181,38 @@ function renderSetup({ resetBefore = false } = {}) {
 
 function startSession() {
   const areaId = $("areaSelect").value;
+  beginSession({
+    areaId,
+    mode: selectedMode,
+    durationMinutes: selectedDuration,
+    beforeImage: $("beforePreview").src || null
+  });
+}
+
+function startSessionForArea(areaId) {
+  selectedMode = modeForArea(areaId);
+  selectedDuration = 5;
+  beginSession({
+    areaId,
+    mode: selectedMode,
+    durationMinutes: selectedDuration,
+    beforeImage: null
+  });
+}
+
+function beginSession({ areaId, mode, durationMinutes, beforeImage }) {
   state.session = {
     id: `session-${Date.now()}`,
     areaId,
-    mode: selectedMode,
+    mode,
     startedAt: new Date().toISOString(),
-    durationMinutes: selectedDuration,
+    durationMinutes,
     completedCount: 0,
-    currentTask: chooseTask(selectedMode),
-    beforeImage: $("beforePreview").src || null,
+    currentTask: chooseTask(mode),
+    beforeImage,
     afterImage: null,
     isActive: true,
-    endsAt: Date.now() + selectedDuration * 60 * 1000
+    endsAt: Date.now() + durationMinutes * 60 * 1000
   };
   saveState();
   renderRun();
@@ -198,6 +220,13 @@ function startSession() {
   startTimer();
   showCoach("最初は3つだけで大丈夫。");
   uploadSessionPhoto("before");
+}
+
+function modeForArea(areaId) {
+  if (areaId === "floor") return "floor_only";
+  if (areaId === "closet" || areaId === "bed") return "clothes_only";
+  if (areaId === "desk") return "paper_only";
+  return "normal";
 }
 
 function resumeSession() {
@@ -228,7 +257,6 @@ function renderRun() {
   const area = state.areas.find((item) => item.id === session.areaId);
   const mode = modes.find((item) => item.id === session.mode);
   const mascot = mascotForTask(session.currentTask);
-  $("headerTodayCount").textContent = state.todayCompleted;
   $("currentArea").textContent = area?.name || "エリア";
   $("modeLabel").textContent = mode?.label || "普通";
   $("taskText").textContent = session.currentTask?.text || "ゴミを3つ捨てる";
@@ -575,15 +603,12 @@ function bindEvents() {
     showScreen("homeScreen");
     showToast("リセットしました");
   });
+  $("headerResumeButton").addEventListener("click", resumeSession);
+  $("headerAddAreaButton").addEventListener("click", () => $("areaDialog").showModal());
   $("saveDriveClientButton").addEventListener("click", saveDriveClientId);
   $("connectDriveButton").addEventListener("click", () => {
     connectDrive().catch((error) => console.error(error));
   });
-  $("startButton").addEventListener("click", () => {
-    renderSetup({ resetBefore: true });
-    showScreen("setupScreen");
-  });
-  $("resumeButton").addEventListener("click", resumeSession);
   $("beginSessionButton").addEventListener("click", startSession);
   $("doneButton").addEventListener("click", () => completeTask());
   $("repeatButton").addEventListener("click", () => completeTask({ repeat: true }));
@@ -602,7 +627,6 @@ function bindEvents() {
     showScreen("homeScreen");
     showToast("おつかれさまでした");
   });
-  $("addAreaButton").addEventListener("click", () => $("areaDialog").showModal());
   $("saveAreaButton").addEventListener("click", addArea);
   $("durationGroup").addEventListener("click", (event) => {
     const button = event.target.closest("button[data-duration]");
@@ -623,21 +647,6 @@ function bindEvents() {
       setImage($("summaryAfter"), src);
       showToast("After写真を保存しました");
       uploadSessionPhoto("after");
-    });
-  });
-  document.querySelectorAll("[data-mobile-nav]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const nav = button.dataset.mobileNav;
-      if (nav === "home") {
-        stopTimer();
-        renderHome();
-        showScreen("homeScreen");
-      }
-      if (nav === "start") {
-        renderSetup({ resetBefore: true });
-        showScreen("setupScreen");
-      }
-      if (nav === "resume") resumeSession();
     });
   });
 }
