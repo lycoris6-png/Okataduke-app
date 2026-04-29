@@ -65,8 +65,8 @@ button {
 .app-header {
   position: relative;
   margin-bottom: 10px;
-  padding: 10px 12px;
-  min-height: 0;
+  padding: 14px 14px 44px;
+  min-height: 116px;
   overflow: hidden;
   color: #ffffff;
   border-radius: 14px;
@@ -80,9 +80,15 @@ button {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 78% 30%, rgba(255, 255, 255, 0.26) 0 8px, transparent 9px),
-    radial-gradient(circle at 88% 72%, rgba(255, 209, 102, 0.32) 0 13px, transparent 14px),
+    linear-gradient(90deg, rgba(40, 22, 63, 0.92) 0%, rgba(40, 22, 63, 0.58) 40%, rgba(40, 22, 63, 0.18) 100%),
+    url("assets/chibi-cleaning-header.png"),
+    radial-gradient(circle at 78% 30%, rgba(255, 255, 255, 0.22) 0 8px, transparent 9px),
+    radial-gradient(circle at 88% 72%, rgba(255, 209, 102, 0.26) 0 13px, transparent 14px),
     linear-gradient(135deg, transparent 0 64%, rgba(255, 255, 255, 0.18) 64% 66%, transparent 66%);
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  background-position: center, right 12px bottom -18px, center, center, center;
+  background-size: cover, min(430px, 62%) auto, auto, auto, auto;
+  opacity: 0.72;
   pointer-events: none;
 }
 
@@ -849,8 +855,15 @@ dialog {
 
   .app-header {
     align-items: center;
-    padding: 8px;
+    padding: 10px 8px 42px;
+    min-height: 108px;
     border-radius: 12px;
+  }
+
+  .app-header::after {
+    background-position: center, right -44px bottom -12px, center, center, center;
+    background-size: cover, 260px auto, auto, auto, auto;
+    opacity: 0.62;
   }
 
   .header-tools {
@@ -934,15 +947,16 @@ body.mobile-preview .app-shell {
 }
 
 body.mobile-preview .app-header {
-  align-items: flex-start;
-  padding: 16px;
-  border-radius: 16px;
+  align-items: center;
+  padding: 10px 8px 42px;
+  min-height: 108px;
+  border-radius: 12px;
 }
 
 body.mobile-preview .header-tools {
-  width: 100%;
-  justify-content: flex-start;
-  margin-top: 10px;
+  width: auto;
+  justify-content: flex-end;
+  margin-top: 0;
 }
 
 body.mobile-preview .hero,
