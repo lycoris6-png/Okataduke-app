@@ -182,13 +182,25 @@ function saveState() {
 }
 
 function normalizeAreas(savedAreas) {
-  const migrated = (Array.isArray(savedAreas) ? savedAreas : []).map((area) => {
-    if (area.id === "bed") return { ...area, id: "futon", name: "布団周り" };
-    return area;
-  });
+  const source = Array.isArray(savedAreas) ? savedAreas : [];
+  const migrated = source
+    .filter((area) => area && typeof area === "object")
+    .map((area) => {
+      if (area.id === "bed") return { ...area, id: "futon", name: "布団周り" };
+      return area;
+    })
+    .filter((area) => typeof area.id === "string" && area.id.trim())
+    .map((area) => ({
+      id: area.id.trim(),
+      name: typeof area.name === "string" && area.name.trim() ? area.name.trim() : area.id.trim(),
+      level: Number.isFinite(area.level) ? area.level : 1,
+      completedCount: Number.isFinite(area.completedCount) ? area.completedCount : 0,
+      lastWorkedAt: area.lastWorkedAt || null
+    }));
   const byId = new Map(migrated.map((area) => [area.id, area]));
   defaultAreas.forEach((area) => {
     if (!byId.has(area.id)) byId.set(area.id, { ...area });
+    else byId.set(area.id, { ...area, ...byId.get(area.id), name: byId.get(area.id).name || area.name });
   });
   return Array.from(byId.values()).filter((area) => area.id !== "bed");
 }
@@ -208,6 +220,7 @@ function showScreen(id) {
 }
 
 function renderHome() {
+  state.areas = normalizeAreas(state.areas);
   $("todayCount").textContent = state.todayCompleted;
   $("holdCount").textContent = Object.values(state.customTasks || {}).filter((items) => items?.length).length;
   $("areaCount").textContent = state.areas.length;
@@ -670,11 +683,19 @@ function addArea() {
   renderHome();
 }
 
+function openDialog(dialogId) {
+  const dialog = $(dialogId);
+  if (!dialog) return;
+  if (dialog.open) return;
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else dialog.setAttribute("open", "");
+}
+
 function openTaskEditor(areaId = state.areas[0]?.id) {
   renderTaskAreaOptions();
   $("taskAreaSelect").value = areaId || state.areas[0]?.id || "";
   renderTaskEditor();
-  $("taskDialog").showModal();
+  openDialog("taskDialog");
 }
 
 function renderTaskAreaOptions() {
@@ -743,7 +764,7 @@ function bindEvents() {
     showToast("リセットしました");
   });
   $("headerResumeButton").addEventListener("click", resumeSession);
-  $("headerAddAreaButton").addEventListener("click", () => $("areaDialog").showModal());
+  $("headerAddAreaButton").addEventListener("click", () => openDialog("areaDialog"));
   $("editTasksButton").addEventListener("click", () => openTaskEditor());
   $("saveDriveClientButton").addEventListener("click", saveDriveClientId);
   $("connectDriveButton").addEventListener("click", () => {
