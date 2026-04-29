@@ -66,6 +66,7 @@ button {
   position: relative;
   margin-bottom: 20px;
   padding: 16px 18px;
+  min-height: 92px;
   overflow: hidden;
   color: #ffffff;
   border-radius: 20px;
@@ -90,13 +91,39 @@ button {
   z-index: 1;
 }
 
+.header-mascots {
+  position: absolute;
+  right: 76px;
+  bottom: -18px;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.header-mascots img {
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(40, 22, 63, 0.28));
+}
+
+.header-mascots img:last-child {
+  width: 82px;
+  height: 82px;
+  margin-left: -16px;
+}
+
 .header-main {
   justify-content: flex-start;
+  z-index: 2;
 }
 
 .header-tools {
   flex-wrap: wrap;
   justify-content: flex-end;
+  z-index: 2;
 }
 
 .app-header h1,
@@ -191,6 +218,28 @@ p {
     linear-gradient(180deg, #f2f7f2 0 63%, #d9c5a0 63% 100%);
   background-size: 34px 34px, auto;
   overflow: hidden;
+}
+
+.hero-mascot {
+  position: absolute;
+  z-index: 5;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 14px rgba(40, 22, 63, 0.20));
+  pointer-events: none;
+}
+
+.hero-mascot-broom {
+  right: 74px;
+  bottom: 16px;
+  width: 116px;
+  height: 116px;
+}
+
+.hero-mascot-laundry {
+  right: 5px;
+  bottom: 34px;
+  width: 96px;
+  height: 96px;
 }
 
 .window {
@@ -361,8 +410,10 @@ p {
 }
 
 .mode-card {
+  position: relative;
   min-height: 98px;
   padding: 16px;
+  overflow: hidden;
   text-align: left;
 }
 
@@ -370,6 +421,23 @@ p {
   outline: 3px solid rgba(255, 111, 145, 0.24);
   border-color: var(--coral);
   background: linear-gradient(180deg, #fff, #fff4f8);
+}
+
+.mode-card::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  bottom: -14px;
+  width: 58px;
+  height: 58px;
+  background: url("assets/chibi-broom.png") center / contain no-repeat;
+  opacity: 0.24;
+  pointer-events: none;
+}
+
+.mode-card:nth-child(4n + 2)::after,
+.mode-card:nth-child(4n + 3)::after {
+  background-image: url("assets/chibi-laundry.png");
 }
 
 .mode-card strong,
@@ -532,6 +600,7 @@ input[type="text"] {
 }
 
 .task-stage {
+  position: relative;
   display: flex;
   min-height: 300px;
   padding: 28px;
@@ -541,6 +610,19 @@ input[type="text"] {
   gap: 18px;
   text-align: center;
   box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.run-mascot {
+  position: absolute;
+  right: 16px;
+  bottom: 8px;
+  width: clamp(88px, 20vw, 126px);
+  height: clamp(88px, 20vw, 126px);
+  object-fit: contain;
+  opacity: 0.94;
+  filter: drop-shadow(0 10px 16px rgba(40, 22, 63, 0.18));
+  pointer-events: none;
 }
 
 .task-stage h2 {
@@ -613,16 +695,11 @@ input[type="text"] {
   animation: floatIn 260ms ease both;
 }
 
-.coach-face {
+.coach-avatar {
   width: 58px;
   height: 58px;
-  border-radius: 20px;
-  background:
-    radial-gradient(circle at 35% 42%, var(--ink) 0 3px, transparent 4px),
-    radial-gradient(circle at 65% 42%, var(--ink) 0 3px, transparent 4px),
-    radial-gradient(ellipse at 50% 66%, rgba(255, 111, 145, 0.75) 0 9px, transparent 10px),
-    linear-gradient(135deg, #ffe89c, #ffb3c6);
-  box-shadow: 0 8px 18px rgba(140, 76, 246, 0.22);
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(140, 76, 246, 0.22));
 }
 
 .coach-bubble p {
@@ -644,7 +721,29 @@ input[type="text"] {
 }
 
 .summary-hero {
+  position: relative;
   padding: 28px;
+  overflow: hidden;
+}
+
+.summary-mascots {
+  position: absolute;
+  right: 16px;
+  bottom: -8px;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.summary-mascots img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 14px rgba(40, 22, 63, 0.16));
+}
+
+.summary-mascots img:last-child {
+  margin-left: -22px;
 }
 
 .photo-pair {
@@ -750,6 +849,23 @@ dialog {
     align-items: flex-start;
     padding: 16px;
     border-radius: 16px;
+    min-height: 104px;
+  }
+
+  .header-mascots {
+    right: 12px;
+    bottom: -12px;
+    opacity: 0.78;
+  }
+
+  .header-mascots img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .header-mascots img:last-child {
+    width: 66px;
+    height: 66px;
   }
 
   .header-tools {
@@ -776,6 +892,18 @@ dialog {
   .task-stage {
     min-height: 270px;
     padding: 22px;
+  }
+
+  .hero-mascot-broom {
+    right: 52px;
+    width: 96px;
+    height: 96px;
+  }
+
+  .hero-mascot-laundry {
+    right: -4px;
+    width: 82px;
+    height: 82px;
   }
 
   .mobile-dock {
@@ -823,10 +951,9 @@ dialog {
     max-width: calc(100vw - 20px);
   }
 
-  .coach-face {
+  .coach-avatar {
     width: 48px;
     height: 48px;
-    border-radius: 16px;
   }
 
   .inline-form {
@@ -897,6 +1024,15 @@ body.mobile-preview .mobile-dock button {
 
   .task-stage h2 {
     font-size: 2.3rem;
+    max-width: 8.4em;
+  }
+
+  .run-mascot {
+    right: -2px;
+    bottom: -8px;
+    width: 84px;
+    height: 84px;
+    opacity: 0.82;
   }
 
   .run-actions {

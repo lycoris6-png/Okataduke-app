@@ -21,6 +21,7 @@ ADHD傾向のあるユーザー向けに、片付けの「次にやる1手」だ
 - スマホ用下部ナビゲーション
 - ホーム画面追加用の `manifest.webmanifest`
 - Google DriveへのBefore / After写真アップロード
+- 生成したちびキャラ素材を使ったヘッダー、ホーム、実行画面、完了画面、コーチ吹き出し
 
 基本データはブラウザの `localStorage` を使っています。Google Drive接続後は、Before / After写真をDriveにもアップロードできます。
 

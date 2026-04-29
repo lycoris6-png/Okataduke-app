@@ -23,6 +23,10 @@
           <span class="mini-stat"><b id="headerTodayCount">0</b>手</span>
           <button class="icon-button" id="resetButton" type="button" aria-label="保存データをリセット">↺</button>
         </div>
+        <div class="header-mascots" aria-hidden="true">
+          <img src="assets/chibi-broom.png" alt="">
+          <img src="assets/chibi-laundry.png" alt="">
+        </div>
       </header>
 
       <main>
@@ -33,6 +37,8 @@
               <p>大きく片付けなくて大丈夫。今できる小さい行動を1つずつ出します。</p>
             </div>
             <div class="room-visual" aria-hidden="true">
+              <img class="hero-mascot hero-mascot-broom" src="assets/chibi-broom.png" alt="">
+              <img class="hero-mascot hero-mascot-laundry" src="assets/chibi-laundry.png" alt="">
               <div class="window"></div>
               <div class="desk"></div>
               <div class="basket"></div>
@@ -128,6 +134,7 @@
           </div>
 
           <div class="task-stage">
+            <img class="run-mascot" id="runMascot" src="assets/chibi-broom.png" alt="">
             <p class="eyebrow" id="modeLabel">普通</p>
             <h2 id="taskText">ゴミを3つ捨てる</h2>
             <p id="coachLine">終わったら、押すだけで大丈夫。</p>
@@ -146,6 +153,10 @@
 
         <section class="screen" id="summaryScreen" aria-labelledby="summaryTitle">
           <div class="summary-hero">
+            <div class="summary-mascots" aria-hidden="true">
+              <img src="assets/chibi-broom.png" alt="">
+              <img src="assets/chibi-laundry.png" alt="">
+            </div>
             <p class="eyebrow">終了</p>
             <h2 id="summaryTitle">ここで終わって大丈夫。</h2>
             <p id="summaryLine">小さい1手は、ちゃんと進捗です。</p>
@@ -190,7 +201,7 @@
 
     <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
     <div class="coach-bubble hidden" id="coachBubble" aria-live="polite">
-      <div class="coach-face" aria-hidden="true"></div>
+      <img class="coach-avatar" id="coachAvatar" src="assets/chibi-broom.png" alt="">
       <p id="coachBubbleText">3つだけで大丈夫。</p>
     </div>
 

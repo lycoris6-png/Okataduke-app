@@ -1,6 +1,10 @@
 const STORAGE_KEY = "okataduke-itte-state-v1";
 const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
 const DRIVE_FOLDER_NAME = "おかたづけ一手 Photos";
+const MASCOTS = {
+  broom: "assets/chibi-broom.png",
+  laundry: "assets/chibi-laundry.png"
+};
 
 const defaultAreas = [
   { id: "desk", name: "机", level: 1, completedCount: 0, lastWorkedAt: null },
@@ -223,12 +227,15 @@ function renderRun() {
   const session = state.session;
   const area = state.areas.find((item) => item.id === session.areaId);
   const mode = modes.find((item) => item.id === session.mode);
+  const mascot = mascotForTask(session.currentTask);
   $("headerTodayCount").textContent = state.todayCompleted;
   $("currentArea").textContent = area?.name || "エリア";
   $("modeLabel").textContent = mode?.label || "普通";
   $("taskText").textContent = session.currentTask?.text || "ゴミを3つ捨てる";
   $("sessionDoneCount").textContent = session.completedCount;
   $("coachLine").textContent = coachLines[session.completedCount % coachLines.length];
+  $("runMascot").src = mascot;
+  $("coachAvatar").src = mascot;
   renderTimer();
 }
 
@@ -493,12 +500,19 @@ function showToast(message) {
   toastTimer = window.setTimeout(() => toast.classList.add("hidden"), 2300);
 }
 
-function showCoach(message) {
+function showCoach(message, mascot = null) {
   const bubble = $("coachBubble");
   $("coachBubbleText").textContent = message;
+  $("coachAvatar").src = mascot || $("runMascot")?.src || MASCOTS.broom;
   bubble.classList.remove("hidden");
   window.clearTimeout(coachTimer);
   coachTimer = window.setTimeout(() => bubble.classList.add("hidden"), 3600);
+}
+
+function mascotForTask(task) {
+  if (!task) return MASCOTS.broom;
+  if (task.category === "clothes" || task.category === "paper") return MASCOTS.laundry;
+  return MASCOTS.broom;
 }
 
 function readImage(input, callback) {
