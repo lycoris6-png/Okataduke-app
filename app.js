@@ -277,11 +277,13 @@ function renderHome() {
   renderDriveStatus();
 }
 
-function renderSetup({ resetBefore = false } = {}) {
+function renderSetup({ resetBefore = false, beforeImage } = {}) {
   if (resetBefore) {
     $("beforeInput").value = "";
     $("beforePreview").removeAttribute("src");
     $("beforePreview").classList.add("hidden");
+  } else if (beforeImage) {
+    setImage($("beforePreview"), beforeImage);
   }
 
   const areaSelect = $("areaSelect");
@@ -828,7 +830,7 @@ function bindEvents() {
   $("endButton").addEventListener("click", endSession);
   $("continueButton").addEventListener("click", () => {
     selectedMode = state.session?.mode || selectedMode;
-    renderSetup({ resetBefore: true });
+    renderSetup({ beforeImage: state.session?.beforeImage });
     showScreen("setupScreen");
   });
   $("finishButton").addEventListener("click", () => {
