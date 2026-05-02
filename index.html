@@ -180,6 +180,20 @@
 
     <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
 
+    <dialog id="beforeDialog">
+      <form method="dialog" class="dialog-body before-dialog">
+        <h2>Before写真</h2>
+        <p class="panel-note" id="beforeDialogArea">始める前の写真を残せます。</p>
+        <label class="photo-start-button" for="quickBeforeInput">写真を撮る / 選ぶ</label>
+        <input class="visually-hidden" id="quickBeforeInput" type="file" accept="image/*" capture="environment">
+        <img class="preview hidden" id="quickBeforePreview" alt="Before写真のプレビュー">
+        <div class="dialog-actions">
+          <button class="secondary-button" id="skipBeforeButton" type="button">写真なしで開始</button>
+          <button class="primary-button" id="startWithBeforeButton" type="button">開始</button>
+        </div>
+      </form>
+    </dialog>
+
     <dialog id="areaDialog">
       <form method="dialog" class="dialog-body">
         <h2>エリアを追加</h2>

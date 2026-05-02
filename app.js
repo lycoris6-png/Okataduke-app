@@ -172,6 +172,7 @@ let toastTimer = null;
 let driveToken = null;
 let driveTokenExpiresAt = 0;
 let driveTokenClient = null;
+let pendingStartAreaId = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -326,11 +327,25 @@ function startSession() {
 function startSessionForArea(areaId) {
   selectedMode = modeForArea(areaId);
   selectedDuration = 5;
+  pendingStartAreaId = areaId;
+  const area = state.areas.find((item) => item.id === areaId);
+  $("quickBeforeInput").value = "";
+  $("quickBeforePreview").removeAttribute("src");
+  $("quickBeforePreview").classList.add("hidden");
+  $("beforeDialogArea").textContent = `${area?.name || "このエリア"}を始める前の写真を残せます。撮らなくてもすぐ始められます。`;
+  openDialog("beforeDialog");
+}
+
+function startPendingSession(beforeImage = null) {
+  if (!pendingStartAreaId) return;
+  const areaId = pendingStartAreaId;
+  pendingStartAreaId = null;
+  $("beforeDialog").close();
   beginSession({
     areaId,
     mode: selectedMode,
     durationMinutes: selectedDuration,
-    beforeImage: null
+    beforeImage
   });
 }
 
@@ -803,6 +818,10 @@ function bindEvents() {
   $("connectDriveButton").addEventListener("click", () => {
     connectDrive().catch((error) => console.error(error));
   });
+  $("skipBeforeButton").addEventListener("click", () => startPendingSession(null));
+  $("startWithBeforeButton").addEventListener("click", () => {
+    startPendingSession($("quickBeforePreview").src || null);
+  });
   $("beginSessionButton").addEventListener("click", startSession);
   $("doneButton").addEventListener("click", () => completeTask());
   $("skipButton").addEventListener("click", skipTask);
@@ -833,6 +852,9 @@ function bindEvents() {
   });
   $("beforeInput").addEventListener("change", (event) => {
     readImage(event.target, (src) => setImage($("beforePreview"), src));
+  });
+  $("quickBeforeInput").addEventListener("change", (event) => {
+    readImage(event.target, (src) => setImage($("quickBeforePreview"), src));
   });
   $("afterInput").addEventListener("change", (event) => {
     readImage(event.target, (src) => {
