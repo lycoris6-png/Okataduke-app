@@ -856,6 +856,16 @@ function bindEvents() {
   $("quickBeforeInput").addEventListener("change", (event) => {
     readImage(event.target, (src) => setImage($("quickBeforePreview"), src));
   });
+  $("summaryBeforeInput").addEventListener("change", (event) => {
+    readImage(event.target, (src) => {
+      if (!state.session) return;
+      state.session.beforeImage = src;
+      saveState();
+      setImage($("summaryBefore"), src);
+      showToast("Before写真を保存しました");
+      uploadSessionPhoto("before");
+    });
+  });
   $("afterInput").addEventListener("change", (event) => {
     readImage(event.target, (src) => {
       if (!state.session) return;
