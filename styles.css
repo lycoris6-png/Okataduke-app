@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Craft Mincho";
+  src: url("assets/fonts/craftmincho.otf") format("opentype");
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
   --ink: #28163f;
@@ -34,7 +40,7 @@ body {
     var(--paper);
   background-size: 28px 28px, auto, auto;
   color: var(--ink);
-  font-family: "Yu Gothic UI", "Hiragino Sans", "Meiryo", system-ui, sans-serif;
+  font-family: "Craft Mincho", "Yu Mincho", "Hiragino Mincho ProN", "Yu Gothic UI", "Meiryo", serif;
 }
 
 button,
