@@ -149,19 +149,47 @@ const coachLines = [
   "私たち、ちゃんと見てるよ。今の一手で変わるからね。"
 ];
 
-const praiseLines = [
-  "ぼくから見ても、ちゃんと進みました。今日はここで区切って大丈夫です。",
-  "私、今の片づけ好き！小さいけど、ちゃんと場所が息した感じ！",
-  "おつかれさまでした。ぼくたちも一緒に見届けました。",
-  "ここで止められるのも上手な片づけです。ぼくはそう思います。",
-  "私ならここで一回お茶にする！ちゃんとやったもん。",
-  "完璧ではなく、再開できる形で終われました。とても良いです。",
-  "やったね！私、こういうちょっと変わる瞬間が好き！",
-  "ぼくは、今日の一手をきちんと記録しておきます。",
-  "ここまでで十分。私たち、また次の一手を出せるよ。",
-  "おつかれさまです。ぼくたちが次回もここから手伝います。",
-  "終われるところまで来たの、かなりえらいよ。私が保証する！",
-  "今日はこれで閉じましょう。ぼくは十分だと思います。"
+const praisePairs = [
+  {
+    gene: "ここで終わって大丈夫です。今日の一手、ちゃんと進みました。",
+    nadia: "うん、十分！あとは写真だけ見て、にやっとしよ！"
+  },
+  {
+    gene: "全部終わらせなくても、区切れたら成功です。",
+    nadia: "そうそう！続きは次の私たちに任せちゃお！"
+  },
+  {
+    gene: "始める前より、少し扱いやすくなっています。",
+    nadia: "その少しが強いんだよね。私、こういうの好き！"
+  },
+  {
+    gene: "今日はここまでにしましょう。ぼくは十分だと思います。",
+    nadia: "賛成！えらいから水飲んで休も！"
+  },
+  {
+    gene: "中断ではなく、ちゃんと終わりを作れました。",
+    nadia: "いい終わり方！次もここから始められるね。"
+  },
+  {
+    gene: "一手ずつ進めた分は、ちゃんと残ります。",
+    nadia: "消えない進歩だ！今日の自分に拍手しとこ！"
+  },
+  {
+    gene: "写真を見比べると、変化が見つかるはずです。",
+    nadia: "小さい変化でも見つけたら勝ち！私も探す！"
+  },
+  {
+    gene: "ここで止める判断も、片づけの一部です。",
+    nadia: "終わるの上手！勢いを明日に残そ！"
+  },
+  {
+    gene: "次に来たとき、ぼくたちがまた一手だけ出します。",
+    nadia: "だから今日は閉店！おつかれさまっ！"
+  },
+  {
+    gene: "今できる分を、きちんとやりました。",
+    nadia: "うん、ちゃんとやった！完璧よりずっと使えるやつ！"
+  }
 ];
 
 let state = loadState();
@@ -480,9 +508,11 @@ function endSession() {
 
 function renderSummary() {
   const session = state.session;
+  const praise = praisePairs[(session?.completedCount || 0) % praisePairs.length];
   $("summarySessionCount").textContent = session?.completedCount || 0;
   $("summaryTodayCount").textContent = state.todayCompleted;
-  $("summaryDialogue").textContent = praiseLines[(session?.completedCount || 0) % praiseLines.length];
+  $("summaryGeneDialogue").querySelector("b").textContent = praise.gene;
+  $("summaryNadiaDialogue").querySelector("b").textContent = praise.nadia;
   setImage($("summaryBefore"), session?.beforeImage);
   setImage($("summaryAfter"), session?.afterImage);
 }
