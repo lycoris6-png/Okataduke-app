@@ -329,6 +329,11 @@ p {
   background: rgba(255, 209, 102, 0.24);
 }
 
+.install-action {
+  border-color: rgba(142, 232, 209, 0.86);
+  background: rgba(142, 232, 209, 0.24);
+}
+
 #resetButton {
   border-color: rgba(255, 159, 122, 0.72);
 }

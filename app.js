@@ -201,6 +201,7 @@ let driveToken = null;
 let driveTokenExpiresAt = 0;
 let driveTokenClient = null;
 let pendingStartAreaId = null;
+let deferredInstallPrompt = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -832,6 +833,7 @@ function bindEvents() {
     renderHome();
     showScreen("homeScreen");
   });
+  $("installButton").addEventListener("click", installApp);
   $("resetButton").addEventListener("click", () => {
     if (!confirm("保存データをリセットしますか？")) return;
     stopTimer();
@@ -912,6 +914,30 @@ function bindEvents() {
 
 bindEvents();
 renderHome();
+
+function installApp() {
+  if (!deferredInstallPrompt) {
+    showToast("Chromeのメニューから「アプリをインストール」を選んでください");
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.finally(() => {
+    deferredInstallPrompt = null;
+    $("installButton").classList.add("hidden");
+  });
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  $("installButton").classList.remove("hidden");
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  $("installButton").classList.add("hidden");
+  showToast("片付けナビをインストールしました");
+});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
