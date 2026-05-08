@@ -128,7 +128,7 @@
               <h2 id="taskText">ゴミを3つ捨てる</h2>
             </div>
             <div class="rpg-coach" aria-live="polite">
-              <img class="run-mascot" id="runMascot" src="assets/chibi-broom.png" alt="ジーン">
+              <img class="run-mascot" id="runMascot" src="assets/coach/gene-task.png" alt="ジーン">
               <div class="rpg-bubble">
                 <span class="rpg-name" id="coachName">ジーン</span>
                 <p id="coachLine">ぼくが次の一手だけ出します。ここだけ見れば大丈夫です。</p>
@@ -141,14 +141,17 @@
             <button class="secondary-button" id="skipButton" type="button">スキップ</button>
             <button class="secondary-button" id="endButton" type="button">終了</button>
           </div>
-          <div class="completion-pop hidden" id="completionPop" aria-live="polite">できた</div>
+          <div class="completion-pop hidden" id="completionPop" aria-live="polite">
+            <img id="completionMascot" src="assets/coach/nadia-celebrate.png" alt="ナディア">
+            <span id="completionLine">できた！今の一手、勝ち！</span>
+          </div>
         </section>
 
         <section class="screen" id="summaryScreen" aria-labelledby="summaryTitle">
           <div class="summary-hero">
             <div class="summary-mascots" aria-hidden="true">
-              <img src="assets/chibi-broom.png" alt="">
-              <img src="assets/chibi-laundry.png" alt="">
+              <img id="summaryGeneMascot" src="assets/coach/gene-ending.png" alt="">
+              <img id="summaryNadiaMascot" src="assets/coach/nadia-celebrate.png" alt="">
             </div>
             <div class="summary-dialogues" aria-live="polite">
               <p class="summary-dialogue gene-line" id="summaryGeneDialogue">

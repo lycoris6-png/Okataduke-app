@@ -1,4 +1,4 @@
-const CACHE_NAME = "kataduke-navi-v2";
+const CACHE_NAME = "kataduke-navi-v3";
 const STATIC_ASSETS = [
   "./",
   "./index.html",
@@ -9,6 +9,12 @@ const STATIC_ASSETS = [
   "./assets/chibi-broom.png",
   "./assets/chibi-laundry.png",
   "./assets/chibi-cleaning-header.png",
+  "./assets/coach/gene-task.png",
+  "./assets/coach/gene-ending.png",
+  "./assets/coach/gene-encourage.png",
+  "./assets/coach/nadia-task.png",
+  "./assets/coach/nadia-celebrate.png",
+  "./assets/coach/nadia-encourage.png",
   "./assets/fonts/craftmincho.otf?v=craftmincho-1",
   "./assets/icons/favicon-32.png",
   "./assets/icons/apple-touch-icon.png",

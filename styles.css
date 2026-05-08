@@ -977,14 +977,33 @@ button:focus-visible,
 .completion-pop {
   position: fixed;
   inset: auto 0 24px;
-  width: fit-content;
+  z-index: 130;
+  display: flex;
+  width: min(360px, calc(100vw - 28px));
   margin: auto;
-  padding: 12px 18px;
+  padding: 8px 14px 8px 8px;
+  align-items: center;
+  gap: 8px;
+  border: 3px double rgba(91, 55, 125, 0.72);
   border-radius: 999px;
-  background: var(--gold);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 248, 223, 0.98));
   color: #352a0d;
   font-weight: 900;
   box-shadow: var(--shadow);
+}
+
+.completion-pop img {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 7px 10px rgba(40, 22, 63, 0.15));
+}
+
+.completion-pop span {
+  min-width: 0;
+  line-height: 1.35;
 }
 
 .toast {

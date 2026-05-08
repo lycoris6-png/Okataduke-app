@@ -3,13 +3,21 @@ const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
 const DRIVE_FOLDER_NAME = "おかたづけ一手 Photos";
 const MASCOTS = {
   broom: "assets/chibi-broom.png",
-  laundry: "assets/chibi-laundry.png"
+  laundry: "assets/chibi-laundry.png",
+  geneTask: "assets/coach/gene-task.png",
+  geneEnding: "assets/coach/gene-ending.png",
+  geneEncourage: "assets/coach/gene-encourage.png",
+  nadiaTask: "assets/coach/nadia-task.png",
+  nadiaCelebrate: "assets/coach/nadia-celebrate.png",
+  nadiaEncourage: "assets/coach/nadia-encourage.png"
 };
 
 const SPEAKERS = {
   gene: {
     name: "ジーン",
-    src: MASCOTS.broom,
+    src: MASCOTS.geneTask,
+    encourageSrc: MASCOTS.geneEncourage,
+    endingSrc: MASCOTS.geneEnding,
     lines: [
       "ぼくが次の一手だけ出します。ここだけ見れば大丈夫です。",
       "ぼくなら、まずここから始めます。終わったら押してください。",
@@ -18,12 +26,18 @@ const SPEAKERS = {
       "止まっても平気です。次の一手はここにあります。",
       "これは小さいけれど、ちゃんと前に進む一手です。",
       "ぼくも一緒に見ています。終わったら合図してください。",
-      "ここまで来られたので、もう始まっています。ゆっくりで大丈夫です。"
+      "ここまで来られたので、もう始まっています。ゆっくりで大丈夫です。",
+      "判断は少なくしてあります。今は書いてある分だけで大丈夫です。",
+      "困ったら、まず一つだけ手に取ってみましょう。",
+      "次の置き場所はあとで考えます。今は動かすところからです。",
+      "小さく終われる形にしてあります。無理に広げなくて大丈夫です。"
     ]
   },
   nadia: {
     name: "ナディア",
-    src: MASCOTS.laundry,
+    src: MASCOTS.nadiaTask,
+    encourageSrc: MASCOTS.nadiaEncourage,
+    endingSrc: MASCOTS.nadiaCelebrate,
     lines: [
       "私ならまずこれやる！終わったら押してね。",
       "よし、次これ！考えるところは私たちに任せて。",
@@ -32,7 +46,11 @@ const SPEAKERS = {
       "小さい前進、かなりえらいよ。次はこれ！",
       "ここだけ見てれば大丈夫。私が次を出すね。",
       "完璧じゃなくていいよ。今の一手がちゃんと効くから。",
-      "いい感じ！終わったら押して、次を一緒に選ぼう。"
+      "いい感じ！終わったら押して、次を一緒に選ぼう。",
+      "目についた一個でいいよ。私が勢いつける！",
+      "今日は散らかりと勝負じゃなくて、一手だけ遊ぶ感じでいこ！",
+      "置いたら終わり！考えすぎる前にやっちゃお。",
+      "今の一手、未来の自分が助かるやつ！"
     ]
   }
 };
@@ -190,6 +208,15 @@ const praisePairs = [
     gene: "今できる分を、きちんとやりました。",
     nadia: "うん、ちゃんとやった！完璧よりずっと使えるやつ！"
   }
+];
+
+const cheerLines = [
+  { name: "ナディア", src: MASCOTS.nadiaCelebrate, text: "できた！今の一手、勝ち！" },
+  { name: "ジーン", src: MASCOTS.geneEncourage, text: "進みました。ここで一息です。" },
+  { name: "ナディア", src: MASCOTS.nadiaEncourage, text: "いいじゃん！次も小さくいこ！" },
+  { name: "ジーン", src: MASCOTS.geneEnding, text: "ちゃんと記録しました。" },
+  { name: "ナディア", src: MASCOTS.nadiaCelebrate, text: "今ちょっと部屋が軽くなった！" },
+  { name: "ジーン", src: MASCOTS.geneEncourage, text: "その一手で十分です。" }
 ];
 
 let state = loadState();
@@ -467,7 +494,7 @@ function renderRun() {
   $("sessionDoneCount").textContent = session.completedCount;
   $("coachName").textContent = speaker.name;
   $("coachLine").textContent = speaker.lines[session.completedCount % speaker.lines.length];
-  $("runMascot").src = speaker.src;
+  $("runMascot").src = mascotForRun(speaker, session.completedCount);
   $("runMascot").alt = speaker.name;
   renderTimer();
 }
@@ -514,6 +541,8 @@ function renderSummary() {
   $("summaryTodayCount").textContent = state.todayCompleted;
   $("summaryGeneDialogue").querySelector("b").textContent = praise.gene;
   $("summaryNadiaDialogue").querySelector("b").textContent = praise.nadia;
+  $("summaryGeneMascot").src = MASCOTS.geneEnding;
+  $("summaryNadiaMascot").src = MASCOTS.nadiaCelebrate;
   setImage($("summaryBefore"), session?.beforeImage);
   setImage($("summaryAfter"), session?.afterImage);
 }
@@ -711,10 +740,14 @@ function renderTimer() {
 
 function showPop() {
   const pop = $("completionPop");
+  const cheer = cheerLines[state.todayCompleted % cheerLines.length];
+  $("completionMascot").src = cheer.src;
+  $("completionMascot").alt = cheer.name;
+  $("completionLine").textContent = cheer.text;
   pop.classList.remove("hidden", "show");
   void pop.offsetWidth;
   pop.classList.add("show");
-  window.setTimeout(() => pop.classList.add("hidden"), 780);
+  window.setTimeout(() => pop.classList.add("hidden"), 1200);
 }
 
 function showToast(message) {
@@ -729,6 +762,11 @@ function speakerForTask(task) {
   if (!task) return SPEAKERS.gene;
   if (task.category === "clothes" || task.category === "paper") return SPEAKERS.nadia;
   return SPEAKERS.gene;
+}
+
+function mascotForRun(speaker, completedCount) {
+  if (completedCount > 0 && completedCount % 3 === 0) return speaker.encourageSrc;
+  return speaker.src;
 }
 
 function readImage(input, callback) {
