@@ -991,6 +991,8 @@ button:focus-visible,
   color: #352a0d;
   font-weight: 900;
   box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .completion-pop img {

@@ -550,14 +550,11 @@ function renderRun() {
   const area = state.areas.find((item) => item.id === session.areaId);
   const speaker = speakerForTask(session.currentTask);
   const isEncourage = session.completedCount > 0 && session.completedCount % 3 === 0;
-  const lineSet = isEncourage && speaker.encourageLines?.length
-    ? speaker.encourageLines
-    : speaker.lines;
   $("currentArea").textContent = area?.name || "エリア";
   $("taskText").textContent = session.currentTask?.text || "ゴミを3つ捨てる";
   $("sessionDoneCount").textContent = session.completedCount;
   $("coachName").textContent = speaker.name;
-  $("coachLine").textContent = lineSet[session.completedCount % lineSet.length];
+  $("coachLine").textContent = speaker.lines[session.completedCount % speaker.lines.length];
   $("runMascot").src = isEncourage ? speaker.encourageSrc : speaker.src;
   $("runMascot").alt = speaker.name;
   renderTimer();
