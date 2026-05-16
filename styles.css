@@ -1025,7 +1025,7 @@ button:focus-visible,
 }
 
 .completion-pop.show {
-  animation: pop 800ms ease-out;
+  animation: pop 1200ms ease-out forwards;
 }
 
 .summary-hero {
@@ -1179,8 +1179,8 @@ dialog {
     opacity: 0;
     transform: translateY(12px) scale(0.94);
   }
-  20%,
-  70% {
+  12%,
+  82% {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
