@@ -513,7 +513,6 @@ function completeTask({ repeat = false } = {}) {
   saveState();
   renderRun();
   showPop();
-  showToast("1手ぶん進みました");
 }
 
 function skipTask({ silent = false } = {}) {
