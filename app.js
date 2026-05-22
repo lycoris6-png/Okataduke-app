@@ -628,6 +628,14 @@ function renderRun() {
   $("coachLine").textContent = speaker.lines[session.completedCount % speaker.lines.length];
   $("runMascot").src = isEncourage ? speaker.encourageSrc : speaker.src;
   $("runMascot").alt = speaker.name;
+  const idealBtn = $("showIdealButton");
+  if (idealBtn) {
+    idealBtn.classList.toggle("set", Boolean(area?.idealImage));
+    idealBtn.setAttribute(
+      "aria-label",
+      area?.idealImage ? `${area.name}の理想を見る` : `${area?.name || "このエリア"}の理想を設定`
+    );
+  }
   renderTimer();
 }
 
@@ -1007,6 +1015,7 @@ function saveIdealImage(src) {
   refreshIdealDialog(area);
   showToast("理想の状態を保存しました");
   renderHome();
+  if (state.session?.isActive && state.session.areaId === editingIdealAreaId) renderRun();
 }
 
 function deleteIdealImage() {
@@ -1018,6 +1027,7 @@ function deleteIdealImage() {
   refreshIdealDialog(area);
   showToast("理想の写真を削除しました");
   renderHome();
+  if (state.session?.isActive && state.session.areaId === editingIdealAreaId) renderRun();
 }
 
 function openTaskEditor(areaId = state.areas[0]?.id) {
@@ -1128,6 +1138,9 @@ function bindEvents() {
     readImage(event.target, (src) => saveIdealImage(src));
   });
   $("idealDeleteButton").addEventListener("click", deleteIdealImage);
+  $("showIdealButton").addEventListener("click", () => {
+    if (state.session?.areaId) openIdealDialog(state.session.areaId);
+  });
   $("durationGroup").addEventListener("click", (event) => {
     const button = event.target.closest("button[data-duration]");
     if (!button) return;
