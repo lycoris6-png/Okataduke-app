@@ -84,16 +84,19 @@ const SPEAKERS = {
 };
 
 const defaultAreas = [
-  { id: "desk", name: "机", level: 1, completedCount: 0, lastWorkedAt: null },
-  { id: "office_desk", name: "オフィスの机", level: 1, completedCount: 0, lastWorkedAt: null },
-  { id: "futon", name: "布団周り", level: 1, completedCount: 0, lastWorkedAt: null },
-  { id: "floor", name: "床", level: 1, completedCount: 0, lastWorkedAt: null },
-  { id: "kitchen", name: "キッチン", level: 1, completedCount: 0, lastWorkedAt: null },
-  { id: "entry", name: "玄関", level: 1, completedCount: 0, lastWorkedAt: null },
-  { id: "sink", name: "洗面所", level: 1, completedCount: 0, lastWorkedAt: null },
-  { id: "bath", name: "バスルーム", level: 1, completedCount: 0, lastWorkedAt: null },
-  { id: "closet", name: "クローゼット", level: 1, completedCount: 0, lastWorkedAt: null }
+  { id: "entry_hall", name: "玄関〜廊下", subtitle: "", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null },
+  { id: "storage_room", name: "北の部屋", subtitle: "ほぼ物置", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null },
+  { id: "washroom", name: "洗面所", subtitle: "洗濯機もある", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null },
+  { id: "bath", name: "バスルーム", subtitle: "", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null },
+  { id: "kitchen", name: "キッチン", subtitle: "", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null },
+  { id: "living", name: "リビング", subtitle: "PCデスクもある", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null },
+  { id: "office_desk", name: "オフィスの机", subtitle: "書類・文具中心", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null },
+  { id: "bedroom", name: "寝室", subtitle: "床・台の上の小物", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null },
+  { id: "closet_inside", name: "押し入れの中", subtitle: "", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null },
+  { id: "mixed_storage", name: "畳んだ服と小物の収納", subtitle: "雑多に入ってる", level: 1, completedCount: 0, lastWorkedAt: null, idealImage: null }
 ];
+
+const DEFAULT_AREA_IDS = new Set(defaultAreas.map((area) => area.id));
 const modes = [
   { id: "low_energy", label: "低エネルギー", hint: "1つ、3つ、置くだけ中心", categories: ["trash", "floor", "clothes", "tiny"], energy: "low" },
   { id: "normal", label: "普通", hint: "3個だけを淡々と", categories: ["trash", "floor", "paper", "clothes", "tiny"], energy: "normal" },
@@ -105,41 +108,48 @@ const modes = [
 ];
 
 const taskTemplates = [
-  { id: "desk_paper_stack_3", text: "机の紙を、あれば最大3枚そろえて重ねる", areaIds: ["desk"], category: "paper", energy: "low", estimatedMinutes: 1 },
-  { id: "desk_pen_3", text: "ペン・はさみ・付箋など、文具を最大3つペン立てか引き出しに戻す", areaIds: ["desk"], category: "tiny", energy: "low", estimatedMinutes: 1 },
-  { id: "desk_trash_3", text: "明らかなゴミを、見つけたぶんだけ捨てる(最大3つ)", areaIds: ["desk"], category: "trash", energy: "low", estimatedMinutes: 2 },
-  { id: "desk_cup_1", text: "コップや皿があれば1つだけ流しへ運ぶ", areaIds: ["desk"], category: "dishes", energy: "low", estimatedMinutes: 1 },
-  { id: "desk_clear_palm", text: "机の端を、手のひら1枚分だけ空ける", areaIds: ["desk"], category: "tiny", energy: "normal", estimatedMinutes: 2 },
-  { id: "desk_items_3", text: "使っていない小物があれば、3つだけ一か所に寄せる", areaIds: ["desk"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  // 玄関〜廊下
+  { id: "entry_hall_shoes_align_1", text: "出ている靴を1足だけ揃える", areaIds: ["entry_hall"], category: "entry", energy: "low", estimatedMinutes: 1 },
+  { id: "entry_hall_shoes_put_1", text: "出しっぱなしの靴があれば1足だけしまう", areaIds: ["entry_hall"], category: "entry", energy: "low", estimatedMinutes: 1 },
+  { id: "entry_hall_trash_1", text: "玄関のゴミが1つあれば捨てる", areaIds: ["entry_hall"], category: "trash", energy: "low", estimatedMinutes: 1 },
+  { id: "entry_hall_umbrella_1", text: "傘を1本だけ整える", areaIds: ["entry_hall"], category: "entry", energy: "low", estimatedMinutes: 1 },
+  { id: "entry_hall_mail_3", text: "郵便物を、あれば最大3枚一か所に置く", areaIds: ["entry_hall"], category: "paper", energy: "low", estimatedMinutes: 2 },
+  { id: "entry_hall_floor_1", text: "玄関の床のものを1つだけどかす", areaIds: ["entry_hall"], category: "floor", energy: "low", estimatedMinutes: 1 },
+  { id: "entry_hall_corridor_pick_3", text: "廊下の床のものを、あれば3つだけ拾う", areaIds: ["entry_hall"], category: "floor", energy: "low", estimatedMinutes: 2 },
+  { id: "entry_hall_corridor_pass", text: "廊下の通り道を、手のひら1枚分だけ広げる", areaIds: ["entry_hall"], category: "floor", energy: "low", estimatedMinutes: 2 },
+  { id: "entry_hall_mat_1", text: "玄関マットの上のものを1つだけどける", areaIds: ["entry_hall"], category: "entry", energy: "low", estimatedMinutes: 1 },
 
-  { id: "office_doc_stack_3", text: "書類を、あれば最大3枚、同じ向きに重ねる", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 1 },
-  { id: "office_paper_trash_3", text: "明らかな紙ゴミを、見つけたぶんだけ捨てる(最大3枚)", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 2 },
-  { id: "office_memo_1", text: "期限切れ・不要なメモが1枚あれば捨てる", areaIds: ["office_desk"], category: "paper", energy: "normal", estimatedMinutes: 2 },
-  { id: "office_items_3", text: "小物を、あれば3つだけ机の端に寄せる", areaIds: ["office_desk"], category: "tiny", energy: "low", estimatedMinutes: 2 },
-  { id: "office_pens_3", text: "ペン・はさみ・テープなど文具を、あれば最大3つまとめる", areaIds: ["office_desk"], category: "tiny", energy: "low", estimatedMinutes: 1 },
-  { id: "office_mail_3", text: "郵便物や封筒を、あれば最大3つ一か所に置く", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 2 },
-  { id: "office_receipt_3", text: "レシートを、あれば最大3枚まとめる", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 1 },
-  { id: "office_front_palm", text: "机の手前を、手のひら1枚分だけ空ける", areaIds: ["office_desk"], category: "tiny", energy: "normal", estimatedMinutes: 2 },
-  { id: "office_package_1", text: "空き袋・包装紙・封筒のどれかが1つあれば捨てる", areaIds: ["office_desk"], category: "trash", energy: "low", estimatedMinutes: 1 },
-  { id: "office_hold_doc_1", text: "判断が必要な書類が1枚あれば、保留場所に置く", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 2 },
+  // 北の部屋(物置)
+  { id: "storage_room_floor_1", text: "床に直置きのものを1つだけ別の場所に動かす", areaIds: ["storage_room"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  { id: "storage_room_box_1", text: "段ボール箱を1つだけ手前にずらして中を確認する", areaIds: ["storage_room"], category: "tiny", energy: "normal", estimatedMinutes: 2 },
+  { id: "storage_room_judge_1", text: "目に入った1つを「使う / 使わない」だけ決める", areaIds: ["storage_room"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  { id: "storage_room_palm", text: "棚の手前を、手のひら1枚分だけ空ける", areaIds: ["storage_room"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  { id: "storage_room_bag_1", text: "空の紙袋・空き箱が1つあれば捨てる", areaIds: ["storage_room"], category: "trash", energy: "low", estimatedMinutes: 1 },
+  { id: "storage_room_pass", text: "通路を1歩分だけ広げる", areaIds: ["storage_room"], category: "floor", energy: "low", estimatedMinutes: 2 },
+  { id: "storage_room_dust_1", text: "近くにあるゴミを1つだけ捨てる", areaIds: ["storage_room"], category: "trash", energy: "low", estimatedMinutes: 1 },
+  { id: "storage_room_known_back_1", text: "「これは戻せる」と分かるものを1つだけ定位置に戻す", areaIds: ["storage_room"], category: "tiny", energy: "low", estimatedMinutes: 2 },
 
-  { id: "futon_clothes_3", text: "布団周りの服を、あれば最大3枚集める", areaIds: ["futon"], category: "clothes", energy: "low", estimatedMinutes: 2 },
-  { id: "futon_trash_3", text: "枕元のゴミを、見つけたぶんだけ捨てる(最大3つ)", areaIds: ["futon"], category: "trash", energy: "low", estimatedMinutes: 2 },
-  { id: "futon_floor_3", text: "床のものを、あれば3個だけ拾う", areaIds: ["futon"], category: "floor", energy: "low", estimatedMinutes: 2 },
-  { id: "futon_book_1", text: "読みかけの本があれば1冊だけ置き場に戻す", areaIds: ["futon"], category: "tiny", energy: "low", estimatedMinutes: 1 },
-  { id: "futon_cord_1", text: "充電コードや延長コードを1本だけよける", areaIds: ["futon"], category: "tiny", energy: "low", estimatedMinutes: 1 },
-  { id: "futon_top_3", text: "布団の上のものを、あれば3個どかす", areaIds: ["futon"], category: "tiny", energy: "low", estimatedMinutes: 2 },
-  { id: "futon_roller_3", text: "粘着テープのコロコロを布団のまわりに3往復だけかける", areaIds: ["futon"], category: "floor", energy: "normal", estimatedMinutes: 2 },
-  { id: "futon_clear_palm", text: "布団の上を、手のひら1枚分だけ空ける", areaIds: ["futon"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  // 洗面所(洗濯機もある)
+  { id: "washroom_items_3", text: "洗面台の上のものを、あれば3つだけ寄せる", areaIds: ["washroom"], category: "sink", energy: "low", estimatedMinutes: 2 },
+  { id: "washroom_empty_1", text: "空の容器が1つあれば捨てる", areaIds: ["washroom"], category: "trash", energy: "low", estimatedMinutes: 1 },
+  { id: "washroom_towel_1", text: "使い終わったタオルを1枚だけ洗濯カゴへ入れる", areaIds: ["washroom"], category: "clothes", energy: "low", estimatedMinutes: 1 },
+  { id: "washroom_toothbrush_1", text: "歯ブラシまわりを1つだけ戻す", areaIds: ["washroom"], category: "sink", energy: "low", estimatedMinutes: 1 },
+  { id: "washroom_hair_1", text: "髪の毛やゴミをティッシュで1回だけ取る", areaIds: ["washroom"], category: "trash", energy: "low", estimatedMinutes: 1 },
+  { id: "washroom_clear_palm", text: "洗面台を、手のひら1枚分だけ空ける", areaIds: ["washroom"], category: "sink", energy: "normal", estimatedMinutes: 2 },
+  { id: "washroom_machine_top_1", text: "洗濯機の上のものを1つだけどける", areaIds: ["washroom"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "washroom_detergent_1", text: "洗剤類が出ていたら1つだけ定位置に戻す", areaIds: ["washroom"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "washroom_net_1", text: "使った洗濯ネットがあれば1つだけ畳む", areaIds: ["washroom"], category: "clothes", energy: "low", estimatedMinutes: 1 },
 
-  { id: "floor_pick_3", text: "床のものを、あれば3個拾う", areaIds: ["floor"], category: "floor", energy: "low", estimatedMinutes: 2 },
-  { id: "floor_path_3", text: "通り道のものを、あれば3個だけ端に寄せる", areaIds: ["floor"], category: "floor", energy: "low", estimatedMinutes: 2 },
-  { id: "floor_trash_3", text: "床のゴミを、見つけたぶんだけ捨てる(最大3つ)", areaIds: ["floor"], category: "trash", energy: "low", estimatedMinutes: 2 },
-  { id: "floor_clothes_3", text: "床の服を、あれば最大3枚カゴに入れる", areaIds: ["floor"], category: "clothes", energy: "low", estimatedMinutes: 2 },
-  { id: "floor_paper_3", text: "床の紙類を、あれば最大3枚拾う", areaIds: ["floor"], category: "paper", energy: "low", estimatedMinutes: 2 },
-  { id: "floor_danger_1", text: "足元の危ないものが1つあればどかす", areaIds: ["floor"], category: "floor", energy: "low", estimatedMinutes: 1 },
-  { id: "floor_roller_3", text: "粘着テープのコロコロを床に3往復だけかける", areaIds: ["floor"], category: "floor", energy: "normal", estimatedMinutes: 2 },
+  // バスルーム
+  { id: "bath_empty_bottle_1", text: "空のボトルが1つあれば捨てる", areaIds: ["bath"], category: "bath", energy: "low", estimatedMinutes: 1 },
+  { id: "bath_bottles_3", text: "ボトルを、あれば3本だけ並べ直す", areaIds: ["bath"], category: "bath", energy: "low", estimatedMinutes: 1 },
+  { id: "bath_drain_1", text: "排水口まわりの見えるゴミを1つだけ取る", areaIds: ["bath"], category: "bath", energy: "normal", estimatedMinutes: 2 },
+  { id: "bath_item_1", text: "浴室内の小物を1つだけ戻す", areaIds: ["bath"], category: "bath", energy: "low", estimatedMinutes: 1 },
+  { id: "bath_towel_1", text: "使い終わったタオルを1枚だけ洗濯カゴへ入れる", areaIds: ["bath"], category: "clothes", energy: "low", estimatedMinutes: 1 },
+  { id: "bath_floor_1", text: "床のものを1つだけ外へ出す", areaIds: ["bath"], category: "floor", energy: "low", estimatedMinutes: 1 },
+  { id: "bath_mirror_1", text: "鏡を片手で一拭きだけする", areaIds: ["bath"], category: "bath", energy: "low", estimatedMinutes: 1 },
 
+  // キッチン
   { id: "kitchen_sink_3", text: "シンクの中のものを、あれば3つだけ動かす", areaIds: ["kitchen"], category: "dishes", energy: "low", estimatedMinutes: 2 },
   { id: "kitchen_container_1", text: "空き容器が1つあれば捨てる", areaIds: ["kitchen"], category: "trash", energy: "low", estimatedMinutes: 1 },
   { id: "kitchen_spice_1", text: "出しっぱなしの調味料が1つあれば元の場所に戻す", areaIds: ["kitchen"], category: "tiny", energy: "low", estimatedMinutes: 1 },
@@ -152,33 +162,63 @@ const taskTemplates = [
   { id: "fridge_front_3", text: "冷蔵庫の手前のものを、あれば3つだけ並べ直す", areaIds: ["kitchen"], category: "fridge", energy: "low", estimatedMinutes: 2 },
   { id: "fridge_veg_1", text: "野菜室の明らかに傷んだものが1つあれば確認する", areaIds: ["kitchen"], category: "fridge", energy: "normal", estimatedMinutes: 2 },
 
-  { id: "entry_shoes_align_1", text: "出ている靴を1足だけ揃える", areaIds: ["entry"], category: "entry", energy: "low", estimatedMinutes: 1 },
-  { id: "entry_shoes_put_1", text: "出しっぱなしの靴があれば1足だけしまう", areaIds: ["entry"], category: "entry", energy: "low", estimatedMinutes: 1 },
-  { id: "entry_trash_1", text: "玄関のゴミが1つあれば捨てる", areaIds: ["entry"], category: "trash", energy: "low", estimatedMinutes: 1 },
-  { id: "entry_umbrella_1", text: "傘を1本だけ整える", areaIds: ["entry"], category: "entry", energy: "low", estimatedMinutes: 1 },
-  { id: "entry_mail_3", text: "郵便物を、あれば最大3枚一か所に置く", areaIds: ["entry"], category: "paper", energy: "low", estimatedMinutes: 2 },
-  { id: "entry_floor_1", text: "玄関の床のものを1つだけどかす", areaIds: ["entry"], category: "floor", energy: "low", estimatedMinutes: 1 },
+  // リビング(PCデスクもある)
+  { id: "living_floor_3", text: "床のものを、あれば3つ拾う", areaIds: ["living"], category: "floor", energy: "low", estimatedMinutes: 2 },
+  { id: "living_path_3", text: "通り道のものを、あれば3つだけ端に寄せる", areaIds: ["living"], category: "floor", energy: "low", estimatedMinutes: 2 },
+  { id: "living_trash_3", text: "床のゴミを、見つけたぶんだけ捨てる(最大3つ)", areaIds: ["living"], category: "trash", energy: "low", estimatedMinutes: 2 },
+  { id: "living_table_3", text: "テーブルの上のものを、あれば最大3つ片付ける", areaIds: ["living"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  { id: "living_remote_1", text: "リモコン類が出ていれば1つだけ定位置に戻す", areaIds: ["living"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "living_cable_1", text: "充電ケーブルを1本だけまとめる", areaIds: ["living"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "living_sofa_3", text: "ソファの上のものを、あれば最大3つどける", areaIds: ["living"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  { id: "living_cup_1", text: "コップや皿があれば1つだけ流しへ運ぶ", areaIds: ["living"], category: "dishes", energy: "low", estimatedMinutes: 1 },
+  { id: "living_pc_pen_3", text: "PCデスクのペン・付箋・文具を、あれば最大3つペン立てに戻す", areaIds: ["living"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "living_pc_paper_3", text: "PCデスクの紙を、あれば最大3枚そろえて重ねる", areaIds: ["living"], category: "paper", energy: "low", estimatedMinutes: 1 },
+  { id: "living_pc_palm", text: "PCデスクの手前を、手のひら1枚分だけ空ける", areaIds: ["living"], category: "tiny", energy: "normal", estimatedMinutes: 2 },
+  { id: "living_pc_items_3", text: "PCデスクの小物を、あれば3つだけ一か所に寄せる", areaIds: ["living"], category: "tiny", energy: "low", estimatedMinutes: 2 },
 
-  { id: "sink_items_3", text: "洗面台の上のものを、あれば3つだけ寄せる", areaIds: ["sink"], category: "sink", energy: "low", estimatedMinutes: 2 },
-  { id: "sink_empty_1", text: "空の容器が1つあれば捨てる", areaIds: ["sink"], category: "trash", energy: "low", estimatedMinutes: 1 },
-  { id: "sink_towel_1", text: "使い終わったタオルを1枚だけ洗濯カゴへ入れる", areaIds: ["sink"], category: "clothes", energy: "low", estimatedMinutes: 1 },
-  { id: "sink_toothbrush_1", text: "歯ブラシまわりを1つだけ戻す", areaIds: ["sink"], category: "sink", energy: "low", estimatedMinutes: 1 },
-  { id: "sink_hair_1", text: "髪の毛やゴミをティッシュで1回だけ取る", areaIds: ["sink"], category: "trash", energy: "low", estimatedMinutes: 1 },
-  { id: "sink_clear_palm", text: "洗面台を、手のひら1枚分だけ空ける", areaIds: ["sink"], category: "sink", energy: "normal", estimatedMinutes: 2 },
+  // オフィスの机
+  { id: "office_desk_doc_stack_3", text: "書類を、あれば最大3枚同じ向きに重ねる", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 1 },
+  { id: "office_desk_paper_trash_3", text: "明らかな紙ゴミを、見つけたぶんだけ捨てる(最大3枚)", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 2 },
+  { id: "office_desk_memo_1", text: "期限切れ・不要なメモが1枚あれば捨てる", areaIds: ["office_desk"], category: "paper", energy: "normal", estimatedMinutes: 2 },
+  { id: "office_desk_items_3", text: "小物を、あれば3つだけ机の端に寄せる", areaIds: ["office_desk"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  { id: "office_desk_pens_3", text: "ペン・はさみ・テープなど文具を、あれば最大3つまとめる", areaIds: ["office_desk"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "office_desk_mail_3", text: "郵便物や封筒を、あれば最大3つ一か所に置く", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 2 },
+  { id: "office_desk_receipt_3", text: "レシートを、あれば最大3枚まとめる", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 1 },
+  { id: "office_desk_front_palm", text: "机の手前を、手のひら1枚分だけ空ける", areaIds: ["office_desk"], category: "tiny", energy: "normal", estimatedMinutes: 2 },
+  { id: "office_desk_package_1", text: "空き袋・包装紙・封筒のどれかが1つあれば捨てる", areaIds: ["office_desk"], category: "trash", energy: "low", estimatedMinutes: 1 },
+  { id: "office_desk_hold_doc_1", text: "判断が必要な書類が1枚あれば、保留場所に置く", areaIds: ["office_desk"], category: "paper", energy: "low", estimatedMinutes: 2 },
 
-  { id: "bath_empty_bottle_1", text: "空のボトルが1つあれば捨てる", areaIds: ["bath"], category: "bath", energy: "low", estimatedMinutes: 1 },
-  { id: "bath_bottles_3", text: "ボトルを、あれば3本だけ並べ直す", areaIds: ["bath"], category: "bath", energy: "low", estimatedMinutes: 1 },
-  { id: "bath_drain_1", text: "排水口まわりの見えるゴミを1つだけ取る", areaIds: ["bath"], category: "bath", energy: "normal", estimatedMinutes: 2 },
-  { id: "bath_item_1", text: "浴室内の小物を1つだけ戻す", areaIds: ["bath"], category: "bath", energy: "low", estimatedMinutes: 1 },
-  { id: "bath_towel_1", text: "使い終わったタオルを1枚だけ洗濯カゴへ入れる", areaIds: ["bath"], category: "clothes", energy: "low", estimatedMinutes: 1 },
-  { id: "bath_floor_1", text: "床のものを1つだけ外へ出す", areaIds: ["bath"], category: "floor", energy: "low", estimatedMinutes: 1 },
+  // 寝室(床・台の上の小物)
+  { id: "bedroom_floor_3", text: "床のものを、あれば3つ拾う", areaIds: ["bedroom"], category: "floor", energy: "low", estimatedMinutes: 2 },
+  { id: "bedroom_clothes_3", text: "服を、あれば最大3枚カゴに入れる", areaIds: ["bedroom"], category: "clothes", energy: "low", estimatedMinutes: 2 },
+  { id: "bedroom_bed_3", text: "ベッド/布団の上のものを、あれば3つどかす", areaIds: ["bedroom"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  { id: "bedroom_side_table_3", text: "サイドテーブルの上の小物を、あれば3つ寄せる", areaIds: ["bedroom"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  { id: "bedroom_cord_1", text: "充電コードを1本だけよける", areaIds: ["bedroom"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "bedroom_book_1", text: "読みかけの本があれば1冊だけ置き場に戻す", areaIds: ["bedroom"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "bedroom_floor_trash_3", text: "床のゴミを、見つけたぶんだけ捨てる(最大3つ)", areaIds: ["bedroom"], category: "trash", energy: "low", estimatedMinutes: 2 },
+  { id: "bedroom_pillow_trash_3", text: "枕元のゴミを、あれば最大3つ捨てる", areaIds: ["bedroom"], category: "trash", energy: "low", estimatedMinutes: 2 },
+  { id: "bedroom_shelf_1", text: "棚の上のものを1つだけ定位置に戻す", areaIds: ["bedroom"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "bedroom_palm", text: "ベッドのまわりを、手のひら1枚分だけ空ける", areaIds: ["bedroom"], category: "tiny", energy: "low", estimatedMinutes: 2 },
 
-  { id: "closet_hanger_3", text: "服を、あれば最大3枚ハンガーにかける", areaIds: ["closet"], category: "clothes", energy: "normal", estimatedMinutes: 2 },
-  { id: "closet_laundry_3", text: "洗濯物を、あれば最大3枚カゴに入れる", areaIds: ["closet"], category: "clothes", energy: "low", estimatedMinutes: 2 },
-  { id: "closet_floor_clothes_3", text: "床の服を、あれば最大3枚拾う", areaIds: ["closet"], category: "clothes", energy: "low", estimatedMinutes: 2 },
-  { id: "closet_wash_1", text: "明らかに洗う服が1枚あれば分ける", areaIds: ["closet"], category: "clothes", energy: "low", estimatedMinutes: 1 },
-  { id: "closet_bag_1", text: "出ているバッグが1つあれば定位置に戻す", areaIds: ["closet"], category: "tiny", energy: "low", estimatedMinutes: 1 },
-  { id: "closet_drawer_1", text: "開いている引き出しを1段だけ閉める", areaIds: ["closet"], category: "tiny", energy: "low", estimatedMinutes: 1 }
+  // 押し入れの中
+  { id: "closet_inside_front_1", text: "手前にあるものを1つだけ取り出して「使う / 使わない」を決める", areaIds: ["closet_inside"], category: "tiny", energy: "normal", estimatedMinutes: 2 },
+  { id: "closet_inside_box_1", text: "段ボール箱を1つだけ手前にずらして中を確認する", areaIds: ["closet_inside"], category: "tiny", energy: "normal", estimatedMinutes: 2 },
+  { id: "closet_inside_bag_1", text: "不要そうな紙袋・空き箱があれば1つだけ捨てる", areaIds: ["closet_inside"], category: "trash", energy: "low", estimatedMinutes: 1 },
+  { id: "closet_inside_palm", text: "押し入れの手前を、手のひら1枚分だけ空ける", areaIds: ["closet_inside"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+  { id: "closet_inside_floor_1", text: "押し入れの床に転がってるものを1つだけどかす", areaIds: ["closet_inside"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "closet_inside_back_1", text: "外に出てるものを1つだけ押し入れに戻す", areaIds: ["closet_inside"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "closet_inside_known_1", text: "「ここのものだ」と分かるものを1つだけ戻す", areaIds: ["closet_inside"], category: "tiny", energy: "low", estimatedMinutes: 2 },
+
+  // 畳んだ服と小物の収納
+  { id: "mixed_storage_fold_1", text: "服を1枚だけ畳み直す", areaIds: ["mixed_storage"], category: "clothes", energy: "low", estimatedMinutes: 2 },
+  { id: "mixed_storage_split_1", text: "服の山に紛れた小物を1つだけ取り出して別の場所へ", areaIds: ["mixed_storage"], category: "clothes", energy: "low", estimatedMinutes: 2 },
+  { id: "mixed_storage_pair_2", text: "同じ種類の服を2枚だけ寄せる", areaIds: ["mixed_storage"], category: "clothes", energy: "low", estimatedMinutes: 2 },
+  { id: "mixed_storage_drawer_1", text: "開いている引き出しを1段だけ閉める", areaIds: ["mixed_storage"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "mixed_storage_clothes_3", text: "服を、あれば最大3枚並べ直す", areaIds: ["mixed_storage"], category: "clothes", energy: "normal", estimatedMinutes: 2 },
+  { id: "mixed_storage_no_wear_1", text: "明らかに着ない服が1枚あれば「分け」候補に置く", areaIds: ["mixed_storage"], category: "clothes", energy: "low", estimatedMinutes: 1 },
+  { id: "mixed_storage_small_1", text: "小物を1つだけ定位置に戻す", areaIds: ["mixed_storage"], category: "tiny", energy: "low", estimatedMinutes: 1 },
+  { id: "mixed_storage_socks_1", text: "靴下を1組だけペアにする", areaIds: ["mixed_storage"], category: "clothes", energy: "low", estimatedMinutes: 1 },
+  { id: "mixed_storage_inner_3", text: "下着・タオル類を、あれば最大3枚同じ場所にまとめる", areaIds: ["mixed_storage"], category: "clothes", energy: "low", estimatedMinutes: 2 }
 ];
 
 const FALLBACK_TASKS = [
@@ -281,6 +321,7 @@ let driveToken = null;
 let driveTokenExpiresAt = 0;
 let driveTokenClient = null;
 let pendingStartAreaId = null;
+let editingIdealAreaId = null;
 let deferredInstallPrompt = null;
 
 const $ = (id) => document.getElementById(id);
@@ -311,6 +352,9 @@ function loadState() {
     }
     initial.areas = normalizeAreas(initial.areas);
     if (!initial.customTasks) initial.customTasks = {};
+    Object.keys(initial.customTasks).forEach((key) => {
+      if (!DEFAULT_AREA_IDS.has(key)) delete initial.customTasks[key];
+    });
     if (!initial.drive) initial.drive = { clientId: "", folderId: null };
     return initial;
   } catch {
@@ -326,24 +370,32 @@ function normalizeAreas(savedAreas) {
   const source = Array.isArray(savedAreas) ? savedAreas : [];
   const migrated = source
     .filter((area) => area && typeof area === "object")
-    .map((area) => {
-      if (area.id === "bed") return { ...area, id: "futon", name: "布団周り" };
-      return area;
-    })
     .filter((area) => typeof area.id === "string" && area.id.trim())
+    .filter((area) => DEFAULT_AREA_IDS.has(area.id.trim()))
     .map((area) => ({
       id: area.id.trim(),
       name: typeof area.name === "string" && area.name.trim() ? area.name.trim() : area.id.trim(),
+      subtitle: typeof area.subtitle === "string" ? area.subtitle : "",
       level: Number.isFinite(area.level) ? area.level : 1,
       completedCount: Number.isFinite(area.completedCount) ? area.completedCount : 0,
-      lastWorkedAt: area.lastWorkedAt || null
+      lastWorkedAt: area.lastWorkedAt || null,
+      idealImage: typeof area.idealImage === "string" ? area.idealImage : null
     }));
   const byId = new Map(migrated.map((area) => [area.id, area]));
   defaultAreas.forEach((area) => {
-    if (!byId.has(area.id)) byId.set(area.id, { ...area });
-    else byId.set(area.id, { ...area, ...byId.get(area.id), name: byId.get(area.id).name || area.name });
+    if (!byId.has(area.id)) {
+      byId.set(area.id, { ...area });
+    } else {
+      const saved = byId.get(area.id);
+      byId.set(area.id, {
+        ...area,
+        ...saved,
+        name: saved.name || area.name,
+        subtitle: saved.subtitle ?? area.subtitle
+      });
+    }
   });
-  return Array.from(byId.values()).filter((area) => area.id !== "bed");
+  return defaultAreas.map((area) => byId.get(area.id));
 }
 
 function todayKey() {
@@ -370,17 +422,36 @@ function renderHome() {
   const areaGrid = $("areaGrid");
   areaGrid.innerHTML = "";
   state.areas.forEach((area) => {
-    const card = document.createElement("button");
-    card.type = "button";
+    const card = document.createElement("div");
     card.className = "area-card";
     card.dataset.areaId = area.id;
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `${area.name} を始める`);
     const percent = Math.min(100, area.completedCount * 10);
+    const subtitleHtml = area.subtitle
+      ? `<small class="area-subtitle">${escapeHtml(area.subtitle)}</small>`
+      : "";
+    const idealSet = area.idealImage ? "set" : "";
+    const idealLabel = area.idealImage ? "理想の状態を見直す" : "理想の状態を設定";
     card.innerHTML = `
       <strong>${escapeHtml(area.name)}</strong>
+      ${subtitleHtml}
       <div class="progress-track"><div class="progress-fill" style="width: ${percent}%"></div></div>
       <small>${area.completedCount}手 完了 ・ 押して開始</small>
+      <button type="button" class="area-ideal-btn ${idealSet}" aria-label="${idealLabel}">📷</button>
     `;
     card.addEventListener("click", () => startSessionForArea(area.id));
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        startSessionForArea(area.id);
+      }
+    });
+    card.querySelector(".area-ideal-btn").addEventListener("click", (event) => {
+      event.stopPropagation();
+      openIdealDialog(area.id);
+    });
     areaGrid.append(card);
   });
   renderDriveStatus();
@@ -484,9 +555,9 @@ function beginSession({ areaId, mode, durationMinutes, beforeImage }) {
 }
 
 function modeForArea(areaId) {
-  if (areaId === "floor") return "floor_only";
-  if (areaId === "closet" || areaId === "futon") return "clothes_only";
-  if (areaId === "desk" || areaId === "office_desk") return "paper_only";
+  if (areaId === "mixed_storage") return "clothes_only";
+  if (areaId === "closet_inside" || areaId === "storage_room") return "low_energy";
+  if (areaId === "office_desk") return "paper_only";
   return "normal";
 }
 
@@ -853,7 +924,7 @@ function speakerForTask(task) {
   if (task.category === "clothes" || task.category === "paper") return SPEAKERS.nadia;
   if (task.category === "custom" || task.category === "fallback") {
     const areaId = task.areaIds?.[0] || state.session?.areaId;
-    const nadiaAreas = ["closet", "futon"];
+    const nadiaAreas = ["mixed_storage", "closet_inside", "bedroom"];
     if (nadiaAreas.includes(areaId)) return SPEAKERS.nadia;
   }
   return SPEAKERS.gene;
@@ -898,6 +969,55 @@ function openDialog(dialogId) {
   if (dialog.open) return;
   if (typeof dialog.showModal === "function") dialog.showModal();
   else dialog.setAttribute("open", "");
+}
+
+function openIdealDialog(areaId) {
+  editingIdealAreaId = areaId;
+  const area = state.areas.find((item) => item.id === areaId);
+  if (!area) return;
+  $("idealDialogTitle").textContent = `${area.name}の理想`;
+  $("idealDialogHint").textContent = area.subtitle
+    ? `${area.subtitle}。「ここまで戻したい」状態を1枚撮っておけます。`
+    : "「ここまで戻したい」状態を1枚撮っておけます。";
+  $("idealInput").value = "";
+  refreshIdealDialog(area);
+  openDialog("idealDialog");
+}
+
+function refreshIdealDialog(area) {
+  const hasImage = Boolean(area?.idealImage);
+  if (hasImage) {
+    setImage($("idealPreview"), area.idealImage);
+    $("idealEmptyText").classList.add("hidden");
+    $("idealDeleteButton").classList.remove("hidden");
+  } else {
+    $("idealPreview").classList.add("hidden");
+    $("idealPreview").removeAttribute("src");
+    $("idealEmptyText").classList.remove("hidden");
+    $("idealDeleteButton").classList.add("hidden");
+  }
+}
+
+function saveIdealImage(src) {
+  if (!editingIdealAreaId) return;
+  const area = state.areas.find((item) => item.id === editingIdealAreaId);
+  if (!area) return;
+  area.idealImage = src;
+  saveState();
+  refreshIdealDialog(area);
+  showToast("理想の状態を保存しました");
+  renderHome();
+}
+
+function deleteIdealImage() {
+  if (!editingIdealAreaId) return;
+  const area = state.areas.find((item) => item.id === editingIdealAreaId);
+  if (!area) return;
+  area.idealImage = null;
+  saveState();
+  refreshIdealDialog(area);
+  showToast("理想の写真を削除しました");
+  renderHome();
 }
 
 function openTaskEditor(areaId = state.areas[0]?.id) {
@@ -1004,6 +1124,10 @@ function bindEvents() {
   $("taskAreaSelect").addEventListener("change", renderTaskEditor);
   $("saveTasksButton").addEventListener("click", saveTaskEditor);
   $("resetTasksButton").addEventListener("click", resetTaskEditor);
+  $("idealInput").addEventListener("change", (event) => {
+    readImage(event.target, (src) => saveIdealImage(src));
+  });
+  $("idealDeleteButton").addEventListener("click", deleteIdealImage);
   $("durationGroup").addEventListener("click", (event) => {
     const button = event.target.closest("button[data-duration]");
     if (!button) return;

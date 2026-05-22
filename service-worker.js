@@ -1,4 +1,4 @@
-const CACHE_NAME = "kataduke-navi-v4";
+const CACHE_NAME = "kataduke-navi-v6";
 const STATIC_ASSETS = [
   "./",
   "./index.html",

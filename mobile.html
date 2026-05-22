@@ -244,6 +244,21 @@
       </form>
     </dialog>
 
+    <dialog id="idealDialog">
+      <form method="dialog" class="dialog-body">
+        <h2 id="idealDialogTitle">理想の状態</h2>
+        <p class="panel-note" id="idealDialogHint">このエリアの「ここまで戻したい」を1枚撮っておけます。</p>
+        <img class="preview hidden" id="idealPreview" alt="理想の状態">
+        <p class="panel-note" id="idealEmptyText">まだ写真は登録されていません。</p>
+        <label class="photo-start-button" for="idealInput">写真を撮る / 選ぶ</label>
+        <input class="visually-hidden" id="idealInput" type="file" accept="image/*" capture="environment">
+        <div class="dialog-actions">
+          <button class="secondary-button hidden" id="idealDeleteButton" type="button">削除</button>
+          <button class="primary-button" value="cancel" type="submit">閉じる</button>
+        </div>
+      </form>
+    </dialog>
+
     <script src="app.js"></script>
   </body>
 </html>
