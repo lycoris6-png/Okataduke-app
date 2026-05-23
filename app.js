@@ -376,6 +376,19 @@ function saveState() {
   }
 }
 
+function resetProgress() {
+  state.todayDate = todayKey();
+  state.todayCompleted = 0;
+  state.heldTasks = [];
+  state.session = null;
+  state.lastTaskIndex = 0;
+  state.areas = state.areas.map((area) => ({
+    ...area,
+    completedCount: 0,
+    lastWorkedAt: null
+  }));
+}
+
 function normalizeAreas(savedAreas) {
   const source = Array.isArray(savedAreas) ? savedAreas : [];
   const migrated = source
@@ -1162,15 +1175,15 @@ function bindEvents() {
   });
   $("installButton").addEventListener("click", installApp);
   $("resetButton").addEventListener("click", () => {
-    if (!confirm("保存データをリセットしますか？")) return;
+    if (!confirm("達成数と進捗をリセットしますか？ 理想写真や設定は残ります。")) return;
     stopTimer();
-    state = createInitialState();
+    resetProgress();
     selectedMode = "normal";
     selectedDuration = 5;
     saveState();
     renderHome();
     showScreen("homeScreen");
-    showToast("リセットしました");
+    showToast("進捗をリセットしました");
   });
   $("headerResumeButton").addEventListener("click", resumeSession);
   $("headerAddAreaButton").addEventListener("click", () => openDialog("areaDialog"));
