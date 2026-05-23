@@ -1,6 +1,7 @@
 const STORAGE_KEY = "okataduke-itte-state-v1";
 const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
 const DRIVE_FOLDER_NAME = "おかたづけ一手 Photos";
+const IDEAL_PHOTO_OPTIONS = { maxEdge: 800, quality: 0.72 };
 const MASCOTS = {
   broom: "assets/chibi-broom.png",
   laundry: "assets/chibi-laundry.png",
@@ -363,7 +364,16 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    return true;
+  } catch (error) {
+    if (error?.name === "QuotaExceededError" || error?.code === 22) {
+      showToast("写真の保存容量がいっぱいです。理想写真を減らすか撮り直してください");
+      return false;
+    }
+    throw error;
+  }
 }
 
 function normalizeAreas(savedAreas) {
@@ -940,12 +950,43 @@ function speakerForTask(task) {
   return SPEAKERS.gene;
 }
 
-function readImage(input, callback) {
+function readImage(input, callback, options = null) {
   const file = input.files?.[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
+  reader.addEventListener("load", () => {
+    if (!options) {
+      callback(reader.result);
+      return;
+    }
+    resizeImageDataUrl(reader.result, options)
+      .then(callback)
+      .catch(() => callback(reader.result));
+  });
   reader.readAsDataURL(file);
+}
+
+function resizeImageDataUrl(src, { maxEdge, quality }) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener("load", () => {
+      const scale = Math.min(1, maxEdge / Math.max(image.naturalWidth, image.naturalHeight));
+      const width = Math.max(1, Math.round(image.naturalWidth * scale));
+      const height = Math.max(1, Math.round(image.naturalHeight * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d");
+      if (!context) {
+        resolve(src);
+        return;
+      }
+      context.drawImage(image, 0, 0, width, height);
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    });
+    image.addEventListener("error", reject);
+    image.src = src;
+  });
 }
 
 function setImage(img, src) {
@@ -1013,12 +1054,37 @@ function saveIdealImage(src) {
   if (!editingIdealAreaId) return;
   const area = state.areas.find((item) => item.id === editingIdealAreaId);
   if (!area) return;
+  const previousImage = area.idealImage;
   area.idealImage = src;
-  saveState();
+  if (!saveState()) {
+    area.idealImage = previousImage;
+    return;
+  }
   refreshIdealDialog(area);
   showToast("理想の状態を保存しました");
   renderHome();
   if (state.session?.isActive && state.session.areaId === editingIdealAreaId) renderRun();
+}
+
+async function compactStoredIdealImages() {
+  let changed = false;
+  for (const area of state.areas) {
+    if (!area.idealImage || area.idealImage.length < 180000) continue;
+    try {
+      const compacted = await resizeImageDataUrl(area.idealImage, IDEAL_PHOTO_OPTIONS);
+      if (compacted.length < area.idealImage.length) {
+        area.idealImage = compacted;
+        changed = true;
+      }
+    } catch {
+      // Keep the original if an older stored image cannot be decoded.
+    }
+  }
+  if (!changed || !saveState()) return;
+  renderHome();
+  if (editingIdealAreaId) {
+    refreshIdealDialog(state.areas.find((area) => area.id === editingIdealAreaId));
+  }
 }
 
 function deleteIdealImage() {
@@ -1139,7 +1205,7 @@ function bindEvents() {
   $("resetTasksButton").addEventListener("click", resetTaskEditor);
   ["idealInput", "idealCameraInput"].forEach((id) => {
     $(id).addEventListener("change", (event) => {
-      readImage(event.target, (src) => saveIdealImage(src));
+      readImage(event.target, (src) => saveIdealImage(src), IDEAL_PHOTO_OPTIONS);
     });
   });
   $("idealDeleteButton").addEventListener("click", deleteIdealImage);
@@ -1192,6 +1258,7 @@ function bindEvents() {
 
 bindEvents();
 renderHome();
+compactStoredIdealImages();
 
 function installApp() {
   if (!deferredInstallPrompt) {
