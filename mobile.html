@@ -108,8 +108,12 @@
 
           <div class="panel">
             <label class="field-label" for="beforeInput">Before写真</label>
-            <label class="photo-start-button" for="beforeInput">写真を撮る / 選ぶ</label>
-            <input class="visually-hidden" id="beforeInput" type="file" accept="image/*" capture="environment">
+            <div class="photo-input-actions">
+              <label class="photo-start-button" for="beforeCameraInput">撮影する</label>
+              <label class="photo-start-button select-photo" for="beforeInput">写真を選ぶ</label>
+            </div>
+            <input class="visually-hidden" id="beforeCameraInput" type="file" accept="image/*" capture="environment">
+            <input class="visually-hidden" id="beforeInput" type="file" accept="image/*">
             <img class="preview hidden" id="beforePreview" alt="Before写真のプレビュー">
           </div>
 
@@ -182,14 +186,22 @@
           <div class="photo-pair">
             <div>
               <span>Before</span>
-              <label class="photo-start-button compact" for="summaryBeforeInput">Beforeを撮る / 選ぶ</label>
-              <input class="visually-hidden" id="summaryBeforeInput" type="file" accept="image/*" capture="environment">
+              <div class="photo-input-actions">
+                <label class="photo-start-button compact" for="summaryBeforeCameraInput">撮影する</label>
+                <label class="photo-start-button compact select-photo" for="summaryBeforeInput">選ぶ</label>
+              </div>
+              <input class="visually-hidden" id="summaryBeforeCameraInput" type="file" accept="image/*" capture="environment">
+              <input class="visually-hidden" id="summaryBeforeInput" type="file" accept="image/*">
               <img id="summaryBefore" alt="Before写真">
             </div>
             <div>
               <span>After</span>
-              <label class="photo-start-button compact" for="afterInput">Afterを撮る / 選ぶ</label>
-              <input class="visually-hidden" id="afterInput" type="file" accept="image/*" capture="environment">
+              <div class="photo-input-actions">
+                <label class="photo-start-button compact" for="afterCameraInput">撮影する</label>
+                <label class="photo-start-button compact select-photo" for="afterInput">選ぶ</label>
+              </div>
+              <input class="visually-hidden" id="afterCameraInput" type="file" accept="image/*" capture="environment">
+              <input class="visually-hidden" id="afterInput" type="file" accept="image/*">
               <img id="summaryAfter" alt="After写真">
             </div>
           </div>
@@ -209,8 +221,12 @@
       <form method="dialog" class="dialog-body before-dialog">
         <h2>Before写真</h2>
         <p class="panel-note" id="beforeDialogArea">始める前の写真を残せます。</p>
-        <label class="photo-start-button" for="quickBeforeInput">写真を撮る / 選ぶ</label>
-        <input class="visually-hidden" id="quickBeforeInput" type="file" accept="image/*" capture="environment">
+        <div class="photo-input-actions">
+          <label class="photo-start-button" for="quickBeforeCameraInput">撮影する</label>
+          <label class="photo-start-button select-photo" for="quickBeforeInput">写真を選ぶ</label>
+        </div>
+        <input class="visually-hidden" id="quickBeforeCameraInput" type="file" accept="image/*" capture="environment">
+        <input class="visually-hidden" id="quickBeforeInput" type="file" accept="image/*">
         <img class="preview hidden" id="quickBeforePreview" alt="Before写真のプレビュー">
         <div class="dialog-actions">
           <button class="secondary-button" id="skipBeforeButton" type="button">写真なしで開始</button>
@@ -253,8 +269,12 @@
         <p class="panel-note" id="idealDialogHint">このエリアの「ここまで戻したい」を1枚撮っておけます。</p>
         <img class="preview hidden" id="idealPreview" alt="理想の状態">
         <p class="panel-note" id="idealEmptyText">まだ写真は登録されていません。</p>
-        <label class="photo-start-button" for="idealInput">写真を撮る / 選ぶ</label>
-        <input class="visually-hidden" id="idealInput" type="file" accept="image/*" capture="environment">
+        <div class="photo-input-actions">
+          <label class="photo-start-button" for="idealCameraInput">撮影する</label>
+          <label class="photo-start-button select-photo" for="idealInput">写真を選ぶ</label>
+        </div>
+        <input class="visually-hidden" id="idealCameraInput" type="file" accept="image/*" capture="environment">
+        <input class="visually-hidden" id="idealInput" type="file" accept="image/*">
         <div class="dialog-actions">
           <button class="secondary-button hidden" id="idealDeleteButton" type="button">削除</button>
           <button class="primary-button" value="cancel" type="submit">閉じる</button>

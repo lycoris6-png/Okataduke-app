@@ -460,6 +460,7 @@ function renderHome() {
 function renderSetup({ resetBefore = false, beforeImage } = {}) {
   if (resetBefore) {
     $("beforeInput").value = "";
+    $("beforeCameraInput").value = "";
     $("beforePreview").removeAttribute("src");
     $("beforePreview").classList.add("hidden");
   } else if (beforeImage) {
@@ -512,6 +513,7 @@ function startSessionForArea(areaId) {
   pendingStartAreaId = areaId;
   const area = state.areas.find((item) => item.id === areaId);
   $("quickBeforeInput").value = "";
+  $("quickBeforeCameraInput").value = "";
   $("quickBeforePreview").removeAttribute("src");
   $("quickBeforePreview").classList.add("hidden");
   $("beforeDialogArea").textContent = `${area?.name || "このエリア"}を始める前の写真を残せます。撮らなくてもすぐ始められます。`;
@@ -988,6 +990,7 @@ function openIdealDialog(areaId) {
     ? `${area.subtitle}。「ここまで戻したい」状態を1枚撮っておけます。`
     : "「ここまで戻したい」状態を1枚撮っておけます。";
   $("idealInput").value = "";
+  $("idealCameraInput").value = "";
   refreshIdealDialog(area);
   openDialog("idealDialog");
 }
@@ -1134,8 +1137,10 @@ function bindEvents() {
   $("taskAreaSelect").addEventListener("change", renderTaskEditor);
   $("saveTasksButton").addEventListener("click", saveTaskEditor);
   $("resetTasksButton").addEventListener("click", resetTaskEditor);
-  $("idealInput").addEventListener("change", (event) => {
-    readImage(event.target, (src) => saveIdealImage(src));
+  ["idealInput", "idealCameraInput"].forEach((id) => {
+    $(id).addEventListener("change", (event) => {
+      readImage(event.target, (src) => saveIdealImage(src));
+    });
   });
   $("idealDeleteButton").addEventListener("click", deleteIdealImage);
   $("showIdealButton").addEventListener("click", () => {
@@ -1149,30 +1154,38 @@ function bindEvents() {
       item.classList.toggle("selected", item === button);
     });
   });
-  $("beforeInput").addEventListener("change", (event) => {
-    readImage(event.target, (src) => setImage($("beforePreview"), src));
-  });
-  $("quickBeforeInput").addEventListener("change", (event) => {
-    readImage(event.target, (src) => setImage($("quickBeforePreview"), src));
-  });
-  $("summaryBeforeInput").addEventListener("change", (event) => {
-    readImage(event.target, (src) => {
-      if (!state.session) return;
-      state.session.beforeImage = src;
-      saveState();
-      setImage($("summaryBefore"), src);
-      showToast("Before写真を保存しました");
-      uploadSessionPhoto("before");
+  ["beforeInput", "beforeCameraInput"].forEach((id) => {
+    $(id).addEventListener("change", (event) => {
+      readImage(event.target, (src) => setImage($("beforePreview"), src));
     });
   });
-  $("afterInput").addEventListener("change", (event) => {
-    readImage(event.target, (src) => {
-      if (!state.session) return;
-      state.session.afterImage = src;
-      saveState();
-      setImage($("summaryAfter"), src);
-      showToast("After写真を保存しました");
-      uploadSessionPhoto("after");
+  ["quickBeforeInput", "quickBeforeCameraInput"].forEach((id) => {
+    $(id).addEventListener("change", (event) => {
+      readImage(event.target, (src) => setImage($("quickBeforePreview"), src));
+    });
+  });
+  ["summaryBeforeInput", "summaryBeforeCameraInput"].forEach((id) => {
+    $(id).addEventListener("change", (event) => {
+      readImage(event.target, (src) => {
+        if (!state.session) return;
+        state.session.beforeImage = src;
+        saveState();
+        setImage($("summaryBefore"), src);
+        showToast("Before写真を保存しました");
+        uploadSessionPhoto("before");
+      });
+    });
+  });
+  ["afterInput", "afterCameraInput"].forEach((id) => {
+    $(id).addEventListener("change", (event) => {
+      readImage(event.target, (src) => {
+        if (!state.session) return;
+        state.session.afterImage = src;
+        saveState();
+        setImage($("summaryAfter"), src);
+        showToast("After写真を保存しました");
+        uploadSessionPhoto("after");
+      });
     });
   });
 }
